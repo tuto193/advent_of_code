@@ -2,6 +2,7 @@ use std::{path::Path, fs::File, io::Read};
 
 mod day_01;
 mod day_02;
+mod day_03;
 
 pub fn get_file_contents(day: String) -> String {
     let filename = format!("inputs/{}.txt", day);
@@ -22,5 +23,9 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    day_02::day_02();
+    // let a = "AZaz".as_bytes();
+    // for l in a.into_iter() {
+    //     println!("Letter is '{}'", l );
+    // }
+    day_03::day_03();
 }
