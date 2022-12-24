@@ -33,3 +33,12 @@ pub fn day_03() {
     // println!("Letter 'a' to digit: {:?}", a[0] - 96u8)
     println!("The total sum of priorities is: {}", {sum_priorities})
 }
+
+pub fn day_03_part2() {
+    let input = get_file_contents("03".to_owned());
+    let mut sum_priorities: usize = 0;
+    for elf_group in input.split("\n").into_iter().take(3) {
+        print!("This is the first line:\n {}", elf_group);
+        return
+    }
+}

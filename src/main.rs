@@ -27,5 +27,5 @@ fn main() {
     // for l in a.into_iter() {
     //     println!("Letter is '{}'", l );
     // }
-    day_03::day_03();
+    day_03::day_03_part2();
 }
