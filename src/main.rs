@@ -4,7 +4,8 @@ mod day_01;
 mod day_02;
 
 pub fn get_file_contents(day: String) -> String {
-    let input_path = Path::new(&format!("inputs/{}.txt", day));
+    let filename = format!("inputs/{}.txt", day);
+    let input_path = Path::new(filename.as_str());
     let mut file = match File::open(&input_path) {
         Err(why) => panic!("Couldn't open {}: {}", input_path.display(), why),
         Ok(file) => file,
@@ -21,5 +22,5 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    println!("The elf is carrying: {}", day_01::day_01().unwrap());
+    day_02::day_02();
 }
