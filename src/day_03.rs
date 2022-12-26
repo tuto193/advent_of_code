@@ -39,7 +39,6 @@ pub fn day_03_part2() {
     let mut sum_priorities: usize = 0;
     let elves = input.split("\n").collect::<Vec<&str>>();
     let iterations = elves.len() / 3;
-    let mut sum_priorities: usize = 0;
     for i in 0..iterations {
         let elf1: HashSet<&u8> = elves[i * 3].as_bytes().into_iter().collect();
         let elf2: HashSet<&u8> = elves[(i * 3) + 1].as_bytes().into_iter().collect();
