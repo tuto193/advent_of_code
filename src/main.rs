@@ -23,9 +23,4 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    // let a = "AZaz".as_bytes();
-    // for l in a.into_iter() {
-    //     println!("Letter is '{}'", l );
-    // }
-    day_03::day_03_part2();
 }
