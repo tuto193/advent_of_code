@@ -5,6 +5,7 @@ mod day_01;
 mod day_02;
 mod day_03;
 mod day_04;
+mod day_05;
 
 pub fn get_file_contents(day: String) -> String {
     let filename = format!("inputs/{}.txt", day);
@@ -27,5 +28,5 @@ pub fn get_file_contents(day: String) -> String {
 fn main() {
     // let foo: usize = "012345".parse().unwrap();
     // println!("Number is: {}", foo);
-    day_04::day_04_part2();
+    day_05::day_05();
 }
