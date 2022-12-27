@@ -33,11 +33,13 @@ pub fn day_04() {
             // |...1...2
             if elf_1[1] <= elf_2[1] {
                 total_contained += 1;
+                continue;
             }
         }
         if elf_1[0] <= elf_2[0] {
             if elf_1[1] >= elf_2[1] {
                 total_contained += 1;
+                continue;
             }
         }
     }
