@@ -27,5 +27,5 @@ pub fn get_file_contents(day: String) -> String {
 fn main() {
     // let foo: usize = "012345".parse().unwrap();
     // println!("Number is: {}", foo);
-    day_04::day_04();
+    day_04::day_04_part2();
 }
