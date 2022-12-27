@@ -6,7 +6,7 @@ pub fn day_05() {
     let initial_status = input[0];
     let input = input[1];
     let mut stacks = parse_initial_status(initial_status);
-    print_stacks(&stacks);
+    // print_stacks(&stacks);
     // println!("Initial status: {:?}", stacks);
     for task in input.split("\n").into_iter() {
         if task == "" {
@@ -71,5 +71,39 @@ fn print_stacks_tops(stacks: Vec<Vec<String>>) {
         }
     }
     println!()
+
+}
+
+pub fn day_05_part2() {
+    let input = get_file_contents("05".to_owned());
+    let input = input.split("\n\n").collect::<Vec<&str>>();
+    let initial_status = input[0];
+    let input = input[1];
+    let mut stacks = parse_initial_status(initial_status);
+    // print_stacks(&stacks);
+    // println!("Initial status: {:?}", stacks);
+    for task in input.split("\n").into_iter() {
+        if task == "" {
+            continue;
+        }
+        let move_from_to = task.split(" ").collect::<Vec<&str>>();
+        let iterations: usize = move_from_to[1].parse().unwrap();
+        let source: usize = move_from_to[3].parse().unwrap();
+        let target: usize = move_from_to[5].parse().unwrap();
+        let mut buffer: Vec<String> = vec![];
+        for _ in 0..iterations {
+            match stacks[source - 1].pop() {
+                None => println!("Tried to take from an empty column"),
+                Some(container) => buffer.push(container),
+            }
+        }
+        for _ in 0..iterations {
+            match buffer.pop() {
+                None => println!("Error: buffer was emtpy while moving into target"),
+                Some(container) => stacks[target - 1].push(container),
+            }
+        }
+    }
+    print_stacks_tops(stacks);
 
 }
