@@ -7,6 +7,7 @@ mod day_03;
 mod day_04;
 mod day_05;
 mod day_06;
+mod day_07;
 
 pub fn get_file_contents(day: String) -> String {
     let filename = format!("inputs/{}.txt", day);
