@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::get_file_contents;
 
 struct File {
@@ -14,7 +16,7 @@ struct Directory {
 
 impl Directory {
     pub fn new(name: String, parent: Option<Directory>) -> Self {
-        Self{
+        Self {
             name: name,
             parent: parent,
             dirs: vec![],
@@ -54,7 +56,7 @@ impl Directory {
             None => {
                 println!("I has no parents");
                 None
-            },
+            }
         }
     }
 
@@ -69,9 +71,7 @@ impl Directory {
 
 impl File {
     pub fn new(size: usize) -> Self {
-        Self{
-            size: size,
-        }
+        Self { size: size }
     }
 
     pub fn get_size(&self) -> usize {
@@ -81,4 +81,5 @@ impl File {
 
 pub fn day_07() {
     let input = get_file_contents("07".to_string());
+    let mut dirs = HashMap::new();
 }

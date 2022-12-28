@@ -49,7 +49,6 @@ fn parse_initial_status(init_stat: &str) -> Vec<Vec<String>> {
             }
             // println!();
         }
-
     }
     // let stacks = stacks.to_vec();
     stacks.to_vec()
@@ -71,7 +70,6 @@ fn print_stacks_tops(stacks: Vec<Vec<String>>) {
         }
     }
     println!()
-
 }
 
 pub fn day_05_part2() {
@@ -105,5 +103,4 @@ pub fn day_05_part2() {
         }
     }
     print_stacks_tops(stacks);
-
 }

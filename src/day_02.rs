@@ -1,6 +1,3 @@
-
-
-
 pub fn day_02() {
     // A, X = Rock
     // B, Y = Paper
@@ -20,18 +17,16 @@ pub fn day_02() {
         if i == "" {
             print!("At the end of file");
             println!("The score is: {}", outcome_score + used_tactic_score);
-            return
+            return;
         }
         // } else {
         //     outcome_score += 3;
         // }
         let you_vs_me = i.split(" ").collect::<Vec<&str>>();
         // println!("This round is: {:?}", you_vs_me);
-        let op_index = r_p_s.iter().position(
-            |&el| el == you_vs_me[0]
-        ).unwrap();
+        let op_index = r_p_s.iter().position(|&el| el == you_vs_me[0]).unwrap();
         match you_vs_me[1] {
-         // Loss
+            // Loss
             "X" => {
                 // used_tactic_score += 0;
                 if op_index == 0 {
@@ -39,12 +34,12 @@ pub fn day_02() {
                 } else {
                     outcome_score += op_index
                 }
-            },
+            }
             // Draw
             "Y" => {
                 used_tactic_score += 3;
                 outcome_score += op_index + 1;
-            },
+            }
             // Win
             "Z" => {
                 used_tactic_score += 6;
@@ -53,7 +48,7 @@ pub fn day_02() {
                 } else {
                     outcome_score += op_index + 2;
                 }
-            },
+            }
             x => print!("Found a weird sign: {}", x),
         }
     }

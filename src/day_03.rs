@@ -11,12 +11,8 @@ pub fn day_03() {
         }
         let bag_size = elf.len() / 2;
         let both_in_bytes = elf.as_bytes();
-        let bag_1: HashSet<&u8> = both_in_bytes[.. bag_size]
-            .into_iter()
-            .collect();
-        let bag_2: HashSet<&u8> = both_in_bytes[bag_size .. ]
-            .into_iter()
-            .collect();
+        let bag_1: HashSet<&u8> = both_in_bytes[..bag_size].into_iter().collect();
+        let bag_2: HashSet<&u8> = both_in_bytes[bag_size..].into_iter().collect();
         let common_items = bag_1.intersection(&bag_2);
         // let common_item = common_items
         //     .into_iter()
@@ -31,7 +27,7 @@ pub fn day_03() {
     }
     // let a = "a".as_bytes();
     // println!("Letter 'a' to digit: {:?}", a[0] - 96u8)
-    println!("The total sum of priorities is: {}", {sum_priorities})
+    println!("The total sum of priorities is: {}", { sum_priorities })
 }
 
 pub fn day_03_part2() {

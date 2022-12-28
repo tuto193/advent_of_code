@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use std::{path::Path, fs::File, io::Read};
+use std::{fs::File, io::Read, path::Path};
 
 mod day_01;
 mod day_02;
@@ -20,10 +20,8 @@ pub fn get_file_contents(day: String) -> String {
     match file.read_to_string(&mut contents) {
         Err(why) => {
             panic!("Couldn't read {}: {}", input_path.display(), why);
-        },
-        Ok(_) => {
-            contents
-        },
+        }
+        Ok(_) => contents,
     }
 }
 
