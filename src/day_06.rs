@@ -12,7 +12,7 @@ pub fn day_06() {
         let set: HashSet<&char> = different.into_iter().collect();
         // println!("Before dedup {:?}", set);
         // set.dedup();
-        println!("After dedup {:?}", set);
+        // println!("After dedup {:?}", set);
         if set.len() == 4 {
             break;
         }
@@ -36,7 +36,7 @@ pub fn day_06_part2() {
         let set: HashSet<&char> = different.into_iter().collect();
         // println!("Before dedup {:?}", set);
         // set.dedup();
-        println!("After dedup {:?}", set);
+        // println!("After dedup {:?}", set);
         if set.len() == message_length {
             break;
         }
