@@ -1,19 +1,18 @@
-use std::{
-    // borrow::BorrowMut,
-    collections::HashMap,
-    // ops::Deref,
-    // ops::{Deref, DerefMut},
-    // rc::Rc,
-};
+use std::collections::HashMap;
 
 use crate::get_file_contents;
 
+#[derive(Debug, Clone)]
+struct File {
+    name: String,
+    size: usize,
+}
 #[derive(Clone, Debug)]
 struct Directory {
     name: String,
     // parent: Option<Box<Directory>>,
     dirs: HashMap<String, Directory>,
-    files: Vec<usize>,
+    files: Vec<File>,
 }
 
 impl Directory {
@@ -29,14 +28,20 @@ impl Directory {
         }
     }
 
-    pub fn total_size(&self) -> usize {
+    pub fn total_size(&self, updated_dirs: &HashMap<String, Directory>) -> usize {
         let mut sum = 0;
-        for f in self.files.iter() {
-            sum += *f;
+        for f in self.get_files().into_iter() {
+            sum += f.size;
         }
-        for d in self.dirs.iter() {
-            // let the_dir = dir_list.get(d).unwrap();
-            sum += d.1.total_size();
+        // for d in s.iter() {
+        //     // let the_dir = dir_list.get(d).unwrap();
+        // }
+        let my_dirs = updated_dirs
+            .iter()
+            .filter(|(n, &_)| self.dirs.contains_key(n.clone()))
+            .collect::<HashMap<&String, &Directory>>();
+        for (_, d) in my_dirs.iter() {
+            sum += d.total_size(updated_dirs);
         }
         sum
     }
@@ -48,8 +53,12 @@ impl Directory {
     //     }
     // }
 
-    pub fn add_file(&mut self, file: usize) {
-        self.files.push(file)
+    pub fn add_file(&mut self, size: usize, name: String) {
+        let to_add = File {
+            name: name,
+            size: size,
+        };
+        self.files.push(to_add)
     }
 
     pub fn add_dir(&mut self, dir: &str) {
@@ -66,8 +75,17 @@ impl Directory {
     //     // to_show
     // }
 
-    pub fn get_files(self) -> Vec<usize> {
-        self.files
+    pub fn get_files(&self) -> Vec<File> {
+        let mut to_return = self.files.clone();
+        // for f in to_return.iter() {
+        //     println!("File '{}' is in '{}'", f.name, self.name);
+        // }
+        for (_, dir) in self.dirs.iter() {
+            // println!("Dir '{}' is in {}", n, self.name);
+            let mut subdir_files = dir.get_files().into_iter().collect::<Vec<File>>();
+            to_return.append(&mut subdir_files);
+        }
+        to_return
     }
 
     pub fn get_dirs(&mut self) -> &mut HashMap<String, Directory> {
@@ -115,14 +133,16 @@ fn get_directories_from_input(input: String) -> HashMap<String, Directory> {
                         // let to_add_dir = Directory::new(found_dir_name.to_string(), Some(mut_active_dir));
                         // let active_dir = active_dirs.last().unwrap();
                         active_dir.add_dir(found_dir_name);
+                        // println!("Dir '{}': added dir '{}'", active_dir.name, output[1]);
                     }
                     "" => continue,
                     f_size => {
-                        println!("File '{}'\t is '{}'", output[1], f_size);
+                        // println!("File '{}'\t is '{}'", output[1], f_size);
                         let file_size: usize = f_size.parse().unwrap();
                         // let mut actual_mut_active_dir = mut_active_dir.deref();
                         // let active_dir = active_dirs.last().unwrap();
-                        active_dir.add_file(file_size);
+                        active_dir.add_file(file_size, output[1].to_string());
+                        // println!("Dir '{}': added file '{}'", active_dir.name, output[1]);
                     }
                 }
             }
@@ -137,13 +157,13 @@ pub fn day_07() {
     let directories = get_directories_from_input(input);
     let max_size: usize = 100000;
     let mut total_sum: usize = 0;
-    let directories_filtered = directories.into_iter().filter(|nd| {
-        println!("Dir {} contains {:?}", nd.1.name, nd.1.files);
-        println!("Dir {} total size {}", nd.1.name, nd.1.total_size());
-        nd.1.total_size() <= max_size
+    let directories_filtered = directories.iter().filter(|(_, d)| {
+        // println!("Dir {} contains {:?}", nd.1.name, nd.1.get_files());
+        // println!("Dir {} total size {}", nd.1.name, nd.1.total_size());
+        d.total_size(&directories) <= max_size
     });
-    for (n, d) in directories_filtered {
-        total_sum += d.total_size();
+    for (_, d) in directories_filtered {
+        total_sum += d.total_size(&directories);
     }
     println!("The total sum of all under {} is: {}", max_size, total_sum)
 }
