@@ -110,6 +110,19 @@ impl Directory {
             d.borrow_mut().print_hierarchy(depth + 1);
         }
     }
+
+    pub fn get_all_over_size(&self, max_size: usize) -> Vec<usize> {
+        let mut to_return: Vec<usize> = vec![];
+        if self.total_size() >= max_size {
+            // println!("Dir '{}' has size '{}' which is under '{}'", self.name, self.total_size(), max_size);
+            to_return.push(self.total_size());
+            for (_n, d) in self.dirs.iter() {
+                let mut d = d.borrow().get_all_over_size(max_size);
+                to_return.append(&mut d);
+            }
+        }
+        to_return
+    }
 }
 
 fn get_directories_from_input(input: String) -> Rc<RefCell<Directory>> {
@@ -195,4 +208,15 @@ pub fn day_07() {
     // root.borrow_mut().print_hierarchy(1);
     let total_sum = root.borrow_mut().get_all_under_limit(max_size);
     println!("The total sum of all under {} is: {}", max_size, total_sum);
+}
+
+pub fn day_07_part2() {
+    let input = get_file_contents("07".to_string());
+    let root = get_directories_from_input(input);
+    let total_space: i32 = 70000000;
+    let current_empty_space = total_space - (root.borrow().total_size() as i32);
+    let needed_empty_space = 30000000 - current_empty_space;
+    let all_over_size = root.borrow().get_all_over_size(needed_empty_space as usize);
+    let smallest = all_over_size.into_iter().min().unwrap();
+    println!("The smallest size found was '{}'", smallest);
 }
