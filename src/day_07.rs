@@ -105,6 +105,25 @@ impl Directory {
         }
         total_sum
     }
+
+    pub fn print_hierarchy(&self, depth: usize) {
+        println!("|");
+        print!("|");
+        for _ in 0..(depth - 1) * 4 {
+            print!("-")
+        }
+        println!("|>{}", self.name);
+        for f in self.files.iter() {
+            print!("|");
+            for _ in 0..depth * 4 {
+                print!("-")
+            }
+                println!("++{} [{}]", f.name, f.size);
+        }
+        for (_n, d) in self.dirs.iter() {
+            d.print_hierarchy(depth + 1);
+        }
+    }
 }
 
 fn get_directories_from_input(input: String) -> Vec<Directory> {
@@ -116,7 +135,7 @@ fn get_directories_from_input(input: String) -> Vec<Directory> {
         let lines = command.split("\n").collect::<Vec<&str>>();
         // println!("Lines after split are now: '{:?}'", lines);
         if lines.len() == 2 {
-            // It is a `cd` command = new directory
+            /////////////////// It is a `cd` command = new directory
             let cd_command_line = lines[0].split(" ").collect::<Vec<&str>>();
             // println!("Command line was length one and looks like: {:?}", cd_command_line);
             match cd_command_line[1] {
@@ -133,15 +152,17 @@ fn get_directories_from_input(input: String) -> Vec<Directory> {
                 dir_name => {
                     // get into a new sub-directory (we found it through `ls`)
                     // println!("Directory name is '{}'", dir_name);
-                    let new_dir = Directory::new(dir_name.to_string());
+                    let cur_dir: &mut Directory = dirs.last_mut().unwrap();
+                    let new_cur_dir = cur_dir.get_dirs().get_mut(dir_name).unwrap();
+                    // let new_dir = Directory::new(dir_name.to_string());
                     // let already_there =
                     active_dirs.push(dir_name.to_string());
                     // let _already_there = dirs.insert(dir_name.to_string(), new_dir);
-                    dirs.push(new_dir);
+                    dirs.push(*new_cur_dir);
                 }
             }
         } else {
-            // it's an `ls` command = we need to split check
+            //////////////// it's an `ls` command = we need to split check
             // Skip the `ls` part
             for line in lines.into_iter().skip(1) {
                 let output = line.split(" ").collect::<Vec<&str>>();
@@ -150,10 +171,11 @@ fn get_directories_from_input(input: String) -> Vec<Directory> {
                     "dir" => {
                         // let cur_dir = mut_active_dir.clone();
                         let found_dir_name = output[1];
+                        println!("Dir '{}': found dir '{}'", active_dirs[0], found_dir_name);
                         // let to_add_dir = Directory::new(found_dir_name.to_string(), Some(mut_active_dir));
                         // let active_dir = active_dirs.last().unwrap();
                         active_dir.get_dirs().insert(found_dir_name.to_string(), Directory::new(found_dir_name.to_string()));
-                        // println!("Dir '{}': added dir '{}'", active_dir.name, output[1]);
+                        println!("Dir '{}': added dir '{}'", active_dir.name, output[1]);
                     }
                     "" => continue,
                     f_size => {
@@ -177,6 +199,10 @@ pub fn day_07() {
     let directories = get_directories_from_input(input);
     let max_size: usize = 100000;
     let root = directories.index(0);
+    // root.print_hierarchy(1);
+    for d in directories.iter() {
+        d.print_hierarchy(1);
+    }
     let total_sum = root.get_all_under_limit(max_size);
     // let directories_wanted = directories.iter().filter(|(_, d)| {
     //     // println!("Dir {} contains {:?}", nd.1.name, nd.1.get_files());
@@ -194,5 +220,5 @@ pub fn day_07() {
     // for (_, d) in directories_wanted {
     //     total_sum += d.total_size(&directories);
     // }
-    println!("The total sum of all under {} is: {}", max_size, total_sum)
+    println!("The total sum of all under {} is: {}", max_size, total_sum);
 }
