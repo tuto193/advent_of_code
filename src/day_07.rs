@@ -68,7 +68,11 @@ impl Directory {
         for (_, dir) in self.dirs.iter() {
             // println!("Dir '{}' is in {}", n, self.name);
             let dir = Rc::clone(dir);
-            let mut subdir_files = dir.borrow_mut().get_files().into_iter().collect::<Vec<File>>();
+            let mut subdir_files = dir
+                .borrow_mut()
+                .get_files()
+                .into_iter()
+                .collect::<Vec<File>>();
             to_return.append(&mut subdir_files);
         }
         to_return
@@ -170,13 +174,18 @@ fn get_directories_from_input(input: String) -> Rc<RefCell<Directory>> {
                         let found_dir_name = output[1];
                         // println!("Dir '{}': added dir '{}'", active_dir.name, output[1]);
                         // Test: Rcs and RefCells
-                        let found_child_dir = Rc::new(RefCell::new(Directory::new(found_dir_name.to_string(), Some(Rc::clone(&active_directory)))));
+                        let found_child_dir = Rc::new(RefCell::new(Directory::new(
+                            found_dir_name.to_string(),
+                            Some(Rc::clone(&active_directory)),
+                        )));
                         active_directory.borrow_mut().add_dir(found_child_dir);
                     }
                     "" => continue,
                     f_size => {
                         let file_size: usize = f_size.parse().unwrap();
-                        active_directory.borrow_mut().add_file(file_size, output[1].to_string());
+                        active_directory
+                            .borrow_mut()
+                            .add_file(file_size, output[1].to_string());
                         // println!("Dir '{}': added file '{}'", active_dir.name, output[1]);
                     }
                 }
