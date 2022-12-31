@@ -8,6 +8,7 @@ mod day_04;
 mod day_05;
 mod day_06;
 mod day_07;
+mod day_08;
 
 pub fn get_file_contents(day: String) -> String {
     let filename = format!("inputs/{}.txt", day);
@@ -26,7 +27,11 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    // let foo: usize = "012345".parse().unwrap();
-    // println!("Number is: {}", foo);
-    day_07::day_07_part2();
+    // let foo: Vec<usize> = "012345"
+    //     .split("")
+    //     .into_iter()
+    //     .skip(1)
+    //     .map(|n| n.parse().unwrap()).collect();
+    // println!("Numbers are: {:?}", foo);
+    day_08::day_08();
 }
