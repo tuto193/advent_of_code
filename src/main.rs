@@ -34,5 +34,5 @@ fn main() {
     //     .skip(1)
     //     .map(|n| n.parse().unwrap()).collect();
     // println!("Numbers are: {:?}", foo);
-    day_08::day_08_part2();
+    day_09::day_09();
 }
