@@ -1,4 +1,10 @@
-use std::{collections::HashSet, ops::{self}, hash::Hash, vec};
+use std::{
+    collections::HashSet,
+    fmt::Display,
+    hash::Hash,
+    ops::{self},
+    vec,
+};
 
 use crate::get_file_contents;
 
@@ -14,11 +20,16 @@ enum Direction {
     Right,
 }
 
-
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 struct Position {
     x: i32,
     y: i32,
+}
+
+impl Display for Position {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
 }
 
 // type Position = (i32, i32);
@@ -32,7 +43,7 @@ struct Tail {
 impl ops::Add for Position {
     type Output = Position;
     fn add(self, rhs: Position) -> Position {
-        Position{
+        Position {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
         }
@@ -93,20 +104,26 @@ impl Position {
         !self.is_adjacent(other) && vector.x.abs() == 1 && vector.y.abs() == 1
     }
 
+    pub fn clip_length_to_dir(&mut self) -> Self {
+        Position {
+            x: self.x.max(-1).min(1),
+            y: self.y.max(-1).min(1),
+        }
+    }
 }
 
 impl Direction {
     pub fn from_vector(dir: Position) -> Self {
         match dir {
-            Position{x: 1, y: 0} => Direction::Right,
-            Position{x: -1, y: 0} => Direction::Left,
-            Position{x: 0, y: -1} => Direction::Up,
-            Position{x: 0, y: 1} => Direction::Down,
-            Position{x: 1, y: 1} => Direction::DownRight,
-            Position{x: -1, y: 1} => Direction::DownLeft,
-            Position{x: 1, y: -1} => Direction::UpRight,
-            Position{x: -1, y: -1} => Direction::UpLeft,
-            x => panic!("Unexpected direction: {:?}", x),
+            Position { x: 1, y: 0 } => Direction::Right,
+            Position { x: -1, y: 0 } => Direction::Left,
+            Position { x: 0, y: -1 } => Direction::Up,
+            Position { x: 0, y: 1 } => Direction::Down,
+            Position { x: 1, y: 1 } => Direction::DownRight,
+            Position { x: -1, y: 1 } => Direction::DownLeft,
+            Position { x: 1, y: -1 } => Direction::UpRight,
+            Position { x: -1, y: -1 } => Direction::UpLeft,
+            x => panic!("Unexpected direction: {}", x),
         }
     }
 }
@@ -114,9 +131,9 @@ impl Direction {
 impl Tail {
     pub fn new() -> Self {
         Self {
-            position: Position{x: 0, y: 0},
-            head: Position{x: 0, y: 0},
-            visited_position: vec![Position{x: 0, y: 0}],
+            position: Position { x: 0, y: 0 },
+            head: Position { x: 0, y: 0 },
+            visited_position: vec![Position { x: 0, y: 0 }],
         }
     }
 
@@ -136,9 +153,10 @@ impl Tail {
         // Head either is or was on top
         if self.position == self.head || // Head moved onto tail
             self.position.is_adjacent(self.head) || // head moved somewhere near tail
-            self.position.is_diagonal(self.head) { // Head moved somewhere diagonal to tail
-            // We do nothing
-            // println!("Head moved, but tail didn't");
+            self.position.is_diagonal(self.head)
+        { // Head moved somewhere diagonal to tail
+             // We do nothing
+             // println!("Head moved, but tail didn't");
         } else {
             // println!("Tail moved from {:?} to {:?}", self.position, old_head);
             self.position = old_head;
@@ -149,34 +167,41 @@ impl Tail {
     }
 
     pub fn follow_head(&mut self, new_head_pos: Position) {
-        let dir_vec = new_head_pos - self.position;
-        if dir_vec.x == 0 && dir_vec.y == 0 {
-            // Don't move
-        } else if dir_vec.is_adjacent(Position{x:0, y: 0}) ||
-            dir_vec.is_diagonal(Position{x: 0, y: 0}) {
+        // let old_head = self.head;
+        // let dir_vec = new_head_pos - self.position;
+        self.head = new_head_pos;
+        if self.position == self.head || // On top
+          self.position.is_adjacent(self.head) ||
+          self.position.is_diagonal(self.head)
+        {
+            // Already touching head, so no need to move tail
             // Move normally
-            let dir_vec = Direction::from_vector(dir_vec);
-            self.move_head(dir_vec, 1);
+            // let dir_vec = Direction::from_vector(dir_vec);
+            // self.move_head(dir_vec, 1);
         } else {
-            // Head was a tail that did a diagonal jump, so we need to jump too
-            let x = if dir_vec.x > 0 {
-                1
-            } else {-1};
-            let y = if dir_vec.y > 0 {1} else {-1};
-            let dir_vec = Direction::from_vector(Position{x: x, y: y});
-            self.move_head(dir_vec, 1)
-
+            let mut tail_to_head_vec = self.head - self.position;
+            let direction_to_move = tail_to_head_vec.clip_length_to_dir();
+            self.position = self.position + direction_to_move;
+            self.visited_position.push(self.position);
+            // println!("Moving towards {}... {} --> {}",direction_to_move, old_pos, self.position);
+            // let dir_vec = Direction::from_vector(Position{x: x, y: y});
+            // self.move_head(dir_vec, 1)
         }
     }
 
     pub fn get_visited_positions_set(&self) -> HashSet<Position> {
         let to_return: HashSet<Position> = self.visited_position.clone().into_iter().collect();
-        println!("With repeated positions '{}'. Without repeated '{}'", self.visited_position.len(), to_return.len());
+        // println!("With repeated positions '{}'. Without repeated '{}'", self.visited_position.len(), to_return.len());
         to_return
     }
+
+    // pub fn show_on_grid(&self, gird: &mut Vec<Vec<String>>, visited_positions_too: bool) {
+
+    // }
 }
 
 pub fn day_09() {
+    // let input = get_file_contents("009".to_string());
     let input = get_file_contents("09".to_string());
     let mut tail = Tail::new();
     for line in input.split("\n").into_iter() {
@@ -194,12 +219,18 @@ pub fn day_09() {
         let steps: usize = command[1].parse().unwrap();
         // println!("Moving '{}' to the '{:?}'", steps, direction);
         tail.move_head(direction, steps);
+        // let to_print = vec![tail.clone()];
+        // print_snake(&to_print);
     }
     let visited_positions = tail.get_visited_positions_set().len();
-    println!("The tail visited a total of '{}' different positions", visited_positions);
+    println!(
+        "The tail visited a total of '{}' different positions",
+        visited_positions
+    );
 }
 
 pub fn day_09_part2() {
+    // let input = get_file_contents("009".to_string());
     let input = get_file_contents("09".to_string());
     let mut tails: Vec<Tail> = vec![];
     // Initialize all tails
@@ -208,6 +239,7 @@ pub fn day_09_part2() {
         tails.push(Tail::new());
     }
 
+    // print_snake(&tails);
     for line in input.split("\n").into_iter() {
         let command: Vec<&str> = line.split(" ").into_iter().collect();
         let direction: Direction = match command[0] {
@@ -225,15 +257,18 @@ pub fn day_09_part2() {
         move_snake(&mut tails, direction, steps);
     }
     let visited_positions = tails[last - 1].get_visited_positions_set().len();
-    println!("The last tail visited a total of '{}' different positions", visited_positions);
-
+    println!(
+        "The last tail visited a total of '{}' different positions",
+        visited_positions
+    );
 }
 
 fn move_snake(tails: &mut Vec<Tail>, direction: Direction, steps: usize) {
+    // println!("Moving {:?} for {} steps", direction, steps);
     for _ in 0..steps {
-
-        let mut actual_head = tails[0].position;
+        // let mut actual_head = tails[0].position;
         tails[0].move_head(direction, 1);
+        let mut actual_head = tails[0].position;
         // let mut actual_tail = Position{x: 0, y: 0};
 
         for t in tails.into_iter().skip(1) {
