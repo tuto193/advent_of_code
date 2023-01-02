@@ -12,7 +12,7 @@ mod day_08;
 mod day_09;
 
 pub fn get_file_contents(day: String) -> String {
-    let filename = format!("inputs/{}.txt", day);
+    let filename = format!("advent-of-code-inputs/2022/{}.txt", day);
     let input_path = Path::new(filename.as_str());
     let mut file = match File::open(&input_path) {
         Err(why) => panic!("Couldn't open {}: {}", input_path.display(), why),
