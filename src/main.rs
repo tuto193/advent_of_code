@@ -28,12 +28,4 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    // let foo: Vec<usize> = "012345"
-    //     .split("")
-    //     .into_iter()
-    //     .skip(1)
-    //     .map(|n| n.parse().unwrap()).collect();
-    // println!("Numbers are: {:?}", foo);
-    // day_09::day_09();
-    day_09::day_09_part2();
 }
