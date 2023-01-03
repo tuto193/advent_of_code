@@ -10,6 +10,7 @@ mod day_06;
 mod day_07;
 mod day_08;
 mod day_09;
+mod day_10;
 
 pub fn get_file_contents(day: String) -> String {
     let filename = format!("advent-of-code-inputs/2022/{}.txt", day);
@@ -28,4 +29,5 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
+    day_10::day_10_part2();
 }
