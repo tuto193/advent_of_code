@@ -1,5 +1,3 @@
-use std::{time::Duration, thread::{sleep, self}};
-
 use crate::get_file_contents;
 
 fn is_cycle_important(cycle: usize) -> bool {
@@ -82,7 +80,8 @@ fn get_drawn_pixels_from_cycle(cycle: &mut usize, times: usize, x: &mut i32, add
         // println!("Pixel positions are {:?}", pixel_positions);
         // let duration = Duration::from_millis(30);
         // sleep(duration);
-        let to_print = ["·", "#"][usize::try_from(pixel_positions.contains(&(*cycle - 1))).unwrap()];
+        let to_print =
+            ["·", "#"][usize::try_from(pixel_positions.contains(&(*cycle - 1))).unwrap()];
         // Register is within drawing range
         // which_cycles.push(*cycle);
         // }
