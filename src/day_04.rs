@@ -1,6 +1,6 @@
 use crate::get_file_contents;
 
-pub fn day_04() {
+pub fn part_1() {
     let input = get_file_contents("04".to_owned());
     let mut total_contained: usize = 0;
     for elf_pair in input.split("\n").into_iter() {
@@ -48,7 +48,7 @@ pub fn day_04() {
     println!("Total self-contained pairs: {}", total_contained);
 }
 
-pub fn day_04_part2() {
+pub fn part_2() {
     let input = get_file_contents("04".to_owned());
     let mut total_contained: usize = 0;
     for elf_pair in input.split("\n").into_iter() {

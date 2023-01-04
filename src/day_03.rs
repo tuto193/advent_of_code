@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::get_file_contents;
 
-pub fn day_03() {
+pub fn part_1() {
     let input = get_file_contents("03".to_owned());
     let mut sum_priorities: usize = 0;
     for elf in input.split("\n").into_iter() {
@@ -30,7 +30,7 @@ pub fn day_03() {
     println!("The total sum of priorities is: {}", { sum_priorities })
 }
 
-pub fn day_03_part2() {
+pub fn part_2() {
     let input = get_file_contents("03".to_owned());
     let mut sum_priorities: usize = 0;
     let elves = input.split("\n").collect::<Vec<&str>>();

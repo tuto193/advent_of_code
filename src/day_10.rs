@@ -26,7 +26,7 @@ fn advance_cycle(cycle: &mut usize, times: usize, x: &mut i32, add_x: i32) -> (b
     (was_important, calculated_important)
 }
 
-pub fn day_10() {
+pub fn part_1() {
     // let input = get_file_contents("10".to_string());
     let input = get_file_contents("10".to_string());
     let mut x = 1;
@@ -110,7 +110,7 @@ fn get_drawn_pixels_from_cycle(cycle: &mut usize, times: usize, x: &mut i32, add
 //     }
 // }
 
-pub fn day_10_part2() {
+pub fn part_2() {
     let input = get_file_contents("10".to_string());
     let mut x = 1;
     // let mut cycle_indices_to_draw: Vec<usize> = vec![];

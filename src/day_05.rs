@@ -1,6 +1,6 @@
 use crate::get_file_contents;
 
-pub fn day_05() {
+pub fn part_1() {
     let input = get_file_contents("05".to_owned());
     let input = input.split("\n\n").collect::<Vec<&str>>();
     let initial_status = input[0];
@@ -72,7 +72,7 @@ fn print_stacks_tops(stacks: Vec<Vec<String>>) {
     println!()
 }
 
-pub fn day_05_part2() {
+pub fn part_2() {
     let input = get_file_contents("05".to_owned());
     let input = input.split("\n\n").collect::<Vec<&str>>();
     let initial_status = input[0];

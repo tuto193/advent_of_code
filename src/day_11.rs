@@ -6,7 +6,7 @@ mod monkey;
 
 use monkey::Monkey;
 
-pub fn day_11() {
+pub fn part_1() {
     // let input = get_file_contents("11".into());
     let input = get_file_contents("011".into());
     let input: Vec<&str> = input.split("\n\n").collect();
@@ -43,7 +43,7 @@ pub fn day_11() {
     println!("Remaining passes: {:?}", total_passes);
 }
 
-pub fn day_11_part2() {
+pub fn part_2() {
     let input = get_file_contents("11".into());
     // let input = get_file_contents("011".into());
     let input: Vec<&str> = input.split("\n\n").collect();

@@ -200,7 +200,7 @@ impl Tail {
     // }
 }
 
-pub fn day_09() {
+pub fn part_1() {
     // let input = get_file_contents("009".to_string());
     let input = get_file_contents("09".to_string());
     let mut tail = Tail::new();
@@ -229,7 +229,7 @@ pub fn day_09() {
     );
 }
 
-pub fn day_09_part2() {
+pub fn part_2() {
     // let input = get_file_contents("009".to_string());
     let input = get_file_contents("09".to_string());
     let mut tails: Vec<Tail> = vec![];

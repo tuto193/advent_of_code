@@ -210,7 +210,7 @@ fn get_directories_from_input(input: String) -> Rc<RefCell<Directory>> {
     active_directory
 }
 
-pub fn day_07() {
+pub fn part_1() {
     let input = get_file_contents("07".to_string());
     let root = get_directories_from_input(input);
     let max_size: usize = 100000;
@@ -219,7 +219,7 @@ pub fn day_07() {
     println!("The total sum of all under {} is: {}", max_size, total_sum);
 }
 
-pub fn day_07_part2() {
+pub fn part_2() {
     let input = get_file_contents("07".to_string());
     let root = get_directories_from_input(input);
     let total_space: i32 = 70000000;

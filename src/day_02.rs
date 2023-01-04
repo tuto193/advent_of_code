@@ -1,4 +1,4 @@
-pub fn day_02() {
+pub fn part_1() {
     // A, X = Rock
     // B, Y = Paper
     // C, Z = Scissors

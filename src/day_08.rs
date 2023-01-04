@@ -21,7 +21,7 @@ fn prepare_input(input: String) -> Vec<Vec<usize>> {
     input
 }
 
-pub fn day_08() {
+pub fn part_1() {
     let input = get_file_contents("08".to_string());
     let input = prepare_input(input);
     let total_rows = input.len();
@@ -62,7 +62,7 @@ fn is_tree_visible(tree_size: usize, coords: (usize, usize), grid: &Vec<Vec<usiz
     false
 }
 
-pub fn day_08_part2() {
+pub fn part_2() {
     let input = get_file_contents("08".to_string());
     let input = prepare_input(input);
     let total_rows = input.len();

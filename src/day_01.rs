@@ -1,4 +1,4 @@
-pub fn day_01() -> Option<usize> {
+pub fn part_1() -> Option<usize> {
     let bind = crate::get_file_contents("01".into());
     let elves_vector: Vec<&str> = bind.split("\n\n").collect();
 

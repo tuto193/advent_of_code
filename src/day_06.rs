@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::get_file_contents;
 
-pub fn day_06() {
+pub fn part_1() {
     let input = get_file_contents("06".to_owned());
     let mut counter: usize = 3;
     let input = input.chars().collect::<Vec<char>>();
@@ -25,7 +25,7 @@ pub fn day_06() {
     println!("Marker found after {}", counter);
 }
 
-pub fn day_06_part2() {
+pub fn part_2() {
     let input = get_file_contents("06".to_owned());
     let message_length: usize = 14;
     let mut counter: usize = message_length - 1;
