@@ -1,4 +1,4 @@
-use std::{rc::Rc, cell::RefCell};
+use std::{cell::RefCell, rc::Rc};
 
 #[derive(Debug)]
 enum OperationType {
@@ -63,7 +63,7 @@ impl Monkey {
         }
     }
 
-    pub fn operation(&mut self, monkey_list: &mut Rc<RefCell<&mut Vec<Monkey>>>) {
+    pub fn operation(&mut self, monkey_list: &Vec<Rc<RefCell<Monkey>>>) {
         while let Some(old) = self.items.pop() {
             // Inspect items
             let rhs = self.operation.1.unwrap_or(old);
@@ -75,7 +75,8 @@ impl Monkey {
             self.times_inspected_items += 1;
             let minus_worry = new / 3;
             let throw_to: usize = if self.test(minus_worry) { 0 } else { 1 };
-            monkey_list.borrow_mut()[self.throw_to_monkeys[throw_to]]
+            monkey_list[self.throw_to_monkeys[throw_to]]
+                .borrow_mut()
                 .items
                 .push(minus_worry);
         }
