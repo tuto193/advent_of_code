@@ -30,5 +30,6 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    day_11::day_11();
+    // day_11::day_11();
+    day_11::day_11_part2();
 }
