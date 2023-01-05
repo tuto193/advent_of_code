@@ -31,6 +31,7 @@ pub fn get_file_contents(day: String) -> String {
 }
 
 fn main() {
-    // day_11::day_11();
+    day_12::part_1();
+    // let chars: Vec<usize> = "12345".chars().into_iter().map(|c| c as usize).collect();
     // day_11::day_11_part2();
 }

@@ -28,10 +28,7 @@ impl Monkey {
         // Get the starting items
         let items_line: Vec<&str> = input[1].split(": ").collect();
         let items_line: Vec<&str> = items_line[1].split(", ").collect();
-        let items: Vec<u128> = items_line
-            .into_iter()
-            .map(|n| n.parse().unwrap())
-            .collect();
+        let items: Vec<u128> = items_line.into_iter().map(|n| n.parse().unwrap()).collect();
 
         // Get the operation stuff
         let operation_line: Vec<&str> = input[2].split("= ").collect();

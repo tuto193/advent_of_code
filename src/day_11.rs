@@ -66,9 +66,7 @@ pub fn part_2() {
     let monkey_reference_list = Rc::clone(&monkeys);
     // make sure they all have a common fear
     for monkey in Rc::clone(&monkeys).iter() {
-        Rc::clone(monkey)
-            .borrow_mut()
-            .change_minus_fear(new_fear);
+        Rc::clone(monkey).borrow_mut().change_minus_fear(new_fear);
     }
 
     // Play rounds normally
