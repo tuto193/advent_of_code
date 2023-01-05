@@ -1,37 +1,48 @@
-#![allow(dead_code)]
-use std::{fs::File, io::Read, path::Path};
-
-mod day_01;
-mod day_02;
-mod day_03;
-mod day_04;
-mod day_05;
-mod day_06;
-mod day_07;
-mod day_08;
-mod day_09;
-mod day_10;
-mod day_11;
-mod day_12;
-
-pub fn get_file_contents(day: String) -> String {
-    let filename = format!("advent-of-code-inputs/2022/{}.txt", day);
-    let input_path = Path::new(filename.as_str());
-    let mut file = match File::open(&input_path) {
-        Err(why) => panic!("Couldn't open {}: {}", input_path.display(), why),
-        Ok(file) => file,
-    };
-    let mut contents = String::new();
-    match file.read_to_string(&mut contents) {
-        Err(why) => {
-            panic!("Couldn't read {}: {}", input_path.display(), why);
-        }
-        Ok(_) => contents,
-    }
-}
+/*
+ * This file contains template code.
+ * There is no need to edit this file unless you want to change template functionality.
+ */
+use advent_of_code::{ANSI_BOLD, ANSI_ITALIC, ANSI_RESET};
+use std::process::Command;
 
 fn main() {
-    day_12::part_1();
-    // let chars: Vec<usize> = "12345".chars().into_iter().map(|c| c as usize).collect();
-    // day_11::day_11_part2();
+    let total: f64 = (1..=25)
+        .map(|day| {
+            let day = format!("{:02}", day);
+
+            let mut args = vec!["run", "--bin", &day];
+            if cfg!(not(debug_assertions)) {
+                args.push("--release");
+            }
+
+            let cmd = Command::new("cargo").args(&args).output().unwrap();
+
+            println!("----------");
+            println!("{}| Day {} |{}", ANSI_BOLD, day, ANSI_RESET);
+            println!("----------");
+
+            let output = String::from_utf8(cmd.stdout).unwrap();
+            let is_empty = output.is_empty();
+
+            println!(
+                "{}",
+                if is_empty {
+                    "Not solved."
+                } else {
+                    output.trim()
+                }
+            );
+
+            if is_empty {
+                0_f64
+            } else {
+                advent_of_code::parse_exec_time(&output)
+            }
+        })
+        .sum();
+
+    println!(
+        "{}Total:{} {}{:.2}ms{}",
+        ANSI_BOLD, ANSI_RESET, ANSI_ITALIC, total, ANSI_RESET
+    );
 }
