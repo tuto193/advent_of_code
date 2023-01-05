@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use crate::get_file_contents;
 // use std::{cell::RefCell, rc::Rc};
 
@@ -7,57 +9,45 @@ use node::Node;
 type Maze = Vec<Vec<Node>>;
 // type Maze = Rc<Vec<Vec<Rc<RefCell<Node>>>>>;
 
-fn iddls(root: Node, maze: Maze) -> Option<Vec<Node>> {
+fn iddfs(root: Node, maze: Maze) -> Option<Vec<Node>> {
     let mut current_depth = 0;
     loop {
-        let (found, nodes) = dls(root, maze.clone(), current_depth);
-        if found {
-            return Some(nodes)
-        } else if nodes.len() == 0 {
+        println!("Current depth in IDDFS: {}", current_depth);
+        let (still_remaining, nodes) = dls(root, maze.clone(), vec![], current_depth);
+        if nodes.is_some() { // Foud a way
+            return nodes;
+        } else if ! still_remaining {
             return None;
         }
         current_depth += 1;
     }
 }
 
-fn dls(start: Node, maze: Maze, limit_depth: usize) -> (bool, Vec<Node>) {
-    let mut depth_level: Vec<Node> = vec![start];
-    let mut visited: Vec<Node> = vec![start];
-    // let mut next_level: Vec<Node> = vec![];
-    let mut path: Vec<Node> = vec![];
-    let mut current_depth: usize = 0;
-    let mut found = false;
-
-    // println!("Trying depth {}", iterative_depth);
-    while let Some(current) = depth_level.pop() {
-        // visited.push(current);
-        // current.mark_visited();
-        path.push(current);
-        // println!("\t-> Our path looks like so {}", path.len());
-        if current.is_end_node() {
-            // We found it
-            found = true;
-            break;
+fn dls(node: Node, maze: Maze, previously_visited: Vec<Node>, depth: usize) -> (bool, Option<Vec<Node>>) {
+    if depth == 0 {
+        if node.is_end_node() {
+            return (true, Some(vec![node]))
         }
-        if current_depth == limit_depth {
-            // We didn't find it at this depth
-            break;
-        }
-        if current_depth < limit_depth {
-            let mut new_neighbors = current.get_unvisited_neighbors(&maze, &visited);
-            if new_neighbors.len() > 0 {
-                depth_level.append(&mut new_neighbors);
-                visited.append(&mut new_neighbors);
-                current_depth += 1;
-            } else {
-                // current_depth -= 1;
-                // Dead End
-                path.pop();
-            }
-        }
-
+        // Already at depth. but maybe we could have carried on
+            return (true, None)
     }
-    (found, path)
+    // We need to go deeper!
+    let mut visited = previously_visited.clone();
+    let mut still_remaining = false;
+    visited.push(node);
+    // let mut neighbors = node.get_unvisited_neighbors(&maze, &visited);
+    // visited.append(&mut neighbors.clone());
+    for neighbor in node.get_unvisited_neighbors(&maze, &visited) {
+        let (remaining, nodes) = dls(neighbor, maze.clone(), visited.clone(), depth - 1);
+        if let Some(mut ns) = nodes {
+            let mut path = vec![node];
+            path.append(&mut ns);
+            return (true, Some(path));
+        } else if remaining { // There is still at least one child
+            still_remaining = true;
+        }
+    }
+    (still_remaining, None)
 }
 
 fn bfs(node: Node, maze: Maze) -> (bool, Vec<Node>) {
@@ -74,8 +64,8 @@ fn bfs(node: Node, maze: Maze) -> (bool, Vec<Node>) {
             found = true;
             break;
         }
-        let mut neighbors = node.get_unvisited_neighbors(&maze, &visited);
-        visited.append(&mut neighbors);
+        let mut neighbors = current.get_unvisited_neighbors(&maze, &visited);
+        visited.append(&mut neighbors.clone());
         next_level.append(&mut neighbors);
 
         if level.len() == 0 {
@@ -100,9 +90,9 @@ fn get_starting_node(maze: Maze) -> Option<Node> {
 pub fn part_1() {
     let input = get_file_contents("12".into());
     let input: Vec<&str> = input.split("\n").collect();
-    let row_length = input[0].len();
+    // let row_length = input[0].len();
     let height = input.len() - 1; // Because of last empty line
-    let total_nodes = row_length * height;
+    // let total_nodes = row_length * height;
     let input: Vec<Vec<char>> = input
         .into_iter()
         .take(height)
@@ -127,16 +117,18 @@ pub fn part_1() {
     let starting_node = get_starting_node(maze.clone()).unwrap();
         // println!("Trying depth {}", current_depth);
     // let (_found, path) = bfs(starting_node, maze.clone());
-    let mut current_depth: usize = 0;
-    let mut path: Vec<Node> = vec![];
-    while current_depth < total_nodes {
-        let (found, nodes) = dls(starting_node, maze.clone(), current_depth);
-        if found {
-            path = nodes;
-            break;
-        }
-        current_depth += 1;
-    }
-
-    println!("Found a way of length {}", path.len());
+    // let mut current_depth: usize = 0;
+    // let mut path: Vec<Node> = vec![];
+    let time_before = Instant::now();
+    let first_path = bfs(starting_node, maze);
+    let elapsed_time_bfs = time_before.elapsed();
+    println!("Found path at depth {} ({} seconds)", first_path.1.len(), elapsed_time_bfs.as_secs());
+    // let time_before = Instant::now();
+    // let path = iddfs(starting_node, maze);
+    // let elapsed_time_iddfs = time_before.elapsed();
+    // if let Some(found) = path {
+    //     println!("Found a way of length {}", found.len());
+    // } else {
+    //     println!("No path found");
+    // }
 }
