@@ -17,6 +17,7 @@ pub struct Node {
     // visited: bool,
     // end_node: bool,
     node_type: NodeType,
+    parent: Option<(usize, usize)>,
 }
 
 impl Node {
@@ -32,12 +33,19 @@ impl Node {
             // visited: false,
             // end_node: is_end_node,
             node_type: node_type,
+            parent: None,
         }
     }
 
     // pub fn mark_visited(&mut self) {
     //     self.visited = true;
     // }
+    pub fn set_parent(&mut self, parent: Node) {
+        if let Some(_already) = self.parent {
+            panic!("Tried to set the parent of this node more than once");
+        }
+        self.parent = Some(parent.coords);
+    }
 
     pub fn get_coords(&self) -> (usize, usize) {
         self.coords
@@ -60,7 +68,10 @@ impl Node {
             let neighbor = maze[y][x - 1];
             // let neighbor = Rc::clone(&neighbor_og);
             // let neighbor = neighbor.try_borrow().unwrap();
-            if !visited.contains(&neighbor) && neighbor.height < self.height + 2 && neighbor.height >= self.height {
+            if !visited.contains(&neighbor)
+                && neighbor.height < self.height + 2
+                && neighbor.height >= self.height
+            {
                 neighbors.push(neighbor);
             }
         }
@@ -68,7 +79,10 @@ impl Node {
             let neighbor = maze[y][x + 1];
             // let neighbor = Rc::clone(&neighbor_og);
             // let neighbor = neighbor.try_borrow().unwrap();
-            if !visited.contains(&neighbor) && neighbor.height < self.height + 2 && neighbor.height >= self.height {
+            if !visited.contains(&neighbor)
+                && neighbor.height < self.height + 2
+                && neighbor.height >= self.height
+            {
                 neighbors.push(neighbor);
             }
         }
@@ -76,7 +90,10 @@ impl Node {
             let neighbor = maze[y - 1][x];
             // let neighbor = Rc::clone(&neighbor_og);
             // let neighbor = neighbor.try_borrow().unwrap();
-            if !visited.contains(&neighbor) && neighbor.height < self.height + 2 && neighbor.height >= self.height {
+            if !visited.contains(&neighbor)
+                && neighbor.height < self.height + 2
+                && neighbor.height >= self.height
+            {
                 neighbors.push(neighbor);
             }
         }
@@ -84,11 +101,21 @@ impl Node {
             let neighbor = maze[y + 1][x];
             // let neighbor = Rc::clone(&neighbor_og);
             // let neighbor = neighbor.try_borrow().unwrap();
-            if !visited.contains(&neighbor) && neighbor.height < self.height + 2 && neighbor.height >= self.height {
+            if !visited.contains(&neighbor)
+                && neighbor.height < self.height + 2
+                && neighbor.height >= self.height
+            {
                 neighbors.push(neighbor);
             }
         }
-        println!("Node {:?}, has neighbors: {:?}", self.coords, neighbors.iter().map(|n| n.coords).collect::<Vec<(usize, usize)>>());
+        println!(
+            "Node {:?}, has neighbors: {:?}",
+            self.coords,
+            neighbors
+                .iter()
+                .map(|n| n.coords)
+                .collect::<Vec<(usize, usize)>>()
+        );
         neighbors
     }
 

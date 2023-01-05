@@ -1,17 +1,15 @@
-use std::{time::Instant, collections::HashSet};
+use std::time::Instant;
 
 use crate::get_file_contents;
 // use std::{cell::RefCell, rc::Rc};
 
 mod bfs;
-mod node;
 mod iddfs;
-use node::Node;
-use iddfs::iddfs;
+mod node;
 use bfs::bfs;
+use iddfs::iddfs;
+use node::Node;
 type Maze = Vec<Vec<Node>>;
-
-
 
 fn get_starting_node(maze: Maze) -> Option<Node> {
     for r in maze.into_iter() {
@@ -25,12 +23,12 @@ fn get_starting_node(maze: Maze) -> Option<Node> {
 }
 
 pub fn part_1() {
+    // let input = get_file_contents("012".into());
     let input = get_file_contents("12".into());
-    // let input = get_file_contents("12".into());
     let input: Vec<&str> = input.split("\n").collect();
     // let row_length = input[0].len();
     let height = input.len() - 1; // Because of last empty line
-    // let total_nodes = row_length * height;
+                                  // let total_nodes = row_length * height;
     let input: Vec<Vec<char>> = input
         .into_iter()
         .take(height)
@@ -59,9 +57,15 @@ pub fn part_1() {
     // let path = bfs(starting_node, maze);
     // let elapsed_time_bfs = time_before.elapsed();
     // // println!("Maze should have 40 Nodes and has {}", total_nodes);
-    // if path.0 {
-    //     println!("Found path at depth {} ({} seconds)", path.1.len() - 2, elapsed_time_bfs.as_secs_f32());
-    //     path.1.into_iter().for_each(|n| println!("Positions are {:?}", n.get_coords()));
+    // if let Some(found) = path {
+    //     println!(
+    //         "Found path at depth {} ({} seconds)",
+    //         path.1.len() - 2,
+    //         elapsed_time_bfs.as_secs_f32()
+    //     );
+    //     path.1
+    //         .into_iter()
+    //         .for_each(|n| println!("Positions are {:?}", n.get_coords()));
     // } else {
     //     println!("Didn't find shit");
     // }
