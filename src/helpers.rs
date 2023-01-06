@@ -3,4 +3,7 @@
  * Example import from this file: `use advent_of_code::helpers::example_fn;`.
  */
 
- pub mod directory;
+pub mod directory;
+pub mod snake;
+pub mod monkey;
+pub mod path_finding;

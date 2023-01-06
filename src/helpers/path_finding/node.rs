@@ -1,8 +1,8 @@
 // use std::{cell::RefCell, rc::Rc};
 
+type Maze = Vec<Vec<Node>>;
 use std::collections::HashSet;
 
-use super::Maze;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum NodeType {
     Start,

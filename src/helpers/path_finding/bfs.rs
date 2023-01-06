@@ -1,4 +1,5 @@
-use super::{Maze, Node};
+use super::node::Node;
+type Maze = Vec<Vec<Node>>;
 use std::collections::HashSet;
 
 //      let Q be a queue

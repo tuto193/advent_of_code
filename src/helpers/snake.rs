@@ -6,10 +6,8 @@ use std::{
     vec,
 };
 
-use crate::get_file_contents;
-
 #[derive(Copy, Clone, Debug)]
-enum Direction {
+pub enum Direction {
     Up,
     UpLeft,
     UpRight,
@@ -21,7 +19,7 @@ enum Direction {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
-struct Position {
+pub struct Position {
     x: i32,
     y: i32,
 }
@@ -34,8 +32,8 @@ impl Display for Position {
 
 // type Position = (i32, i32);
 #[derive(Clone, Debug)]
-struct Tail {
-    position: Position,
+pub struct Tail {
+    pub position: Position,
     head: Position,
     visited_position: Vec<Position>,
 }
@@ -198,83 +196,4 @@ impl Tail {
     // pub fn show_on_grid(&self, gird: &mut Vec<Vec<String>>, visited_positions_too: bool) {
 
     // }
-}
-
-pub fn part_1() {
-    // let input = get_file_contents("009".to_string());
-    let input = get_file_contents("09".to_string());
-    let mut tail = Tail::new();
-    for line in input.split("\n").into_iter() {
-        let command: Vec<&str> = line.split(" ").into_iter().collect();
-        let direction: Direction = match command[0] {
-            "U" => Direction::Up,
-            "D" => Direction::Down,
-            "L" => Direction::Left,
-            "R" => Direction::Right,
-            x => {
-                println!("Moved into an unexpected direction: '{}'", x);
-                continue;
-            }
-        };
-        let steps: usize = command[1].parse().unwrap();
-        // println!("Moving '{}' to the '{:?}'", steps, direction);
-        tail.move_head(direction, steps);
-        // let to_print = vec![tail.clone()];
-        // print_snake(&to_print);
-    }
-    let visited_positions = tail.get_visited_positions_set().len();
-    println!(
-        "The tail visited a total of '{}' different positions",
-        visited_positions
-    );
-}
-
-pub fn part_2() {
-    // let input = get_file_contents("009".to_string());
-    let input = get_file_contents("09".to_string());
-    let mut tails: Vec<Tail> = vec![];
-    // Initialize all tails
-    let last = 9;
-    for _ in 0..last {
-        tails.push(Tail::new());
-    }
-
-    // print_snake(&tails);
-    for line in input.split("\n").into_iter() {
-        let command: Vec<&str> = line.split(" ").into_iter().collect();
-        let direction: Direction = match command[0] {
-            "U" => Direction::Up,
-            "D" => Direction::Down,
-            "L" => Direction::Left,
-            "R" => Direction::Right,
-            x => {
-                println!("Moved into an unexpected direction: '{}'", x);
-                continue;
-            }
-        };
-        let steps: usize = command[1].parse().unwrap();
-        // println!("Moving '{}' to the '{:?}'", steps, direction);
-        move_snake(&mut tails, direction, steps);
-    }
-    let visited_positions = tails[last - 1].get_visited_positions_set().len();
-    println!(
-        "The last tail visited a total of '{}' different positions",
-        visited_positions
-    );
-}
-
-fn move_snake(tails: &mut Vec<Tail>, direction: Direction, steps: usize) {
-    // println!("Moving {:?} for {} steps", direction, steps);
-    for _ in 0..steps {
-        // let mut actual_head = tails[0].position;
-        tails[0].move_head(direction, 1);
-        let mut actual_head = tails[0].position;
-        // let mut actual_tail = Position{x: 0, y: 0};
-
-        for t in tails.into_iter().skip(1) {
-            let old_head = t.position;
-            t.follow_head(actual_head);
-            actual_head = old_head;
-        }
-    }
 }
