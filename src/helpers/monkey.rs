@@ -8,7 +8,7 @@ enum OperationType {
 
 #[derive(Debug)]
 pub struct Monkey {
-    monkey_index: usize,
+    // monkey_index: usize,
     items: Vec<u128>,
     operation: (OperationType, Option<u128>),
     test_modulator: u128,
@@ -21,9 +21,9 @@ impl Monkey {
     pub fn from_input(input: String, m_fear: u128) -> Self {
         let input: Vec<&str> = input.split("\n").collect();
         // Read the index
-        let monkey_line: Vec<&str> = input[0].split(" ").collect();
-        let monkey_line: Vec<&str> = monkey_line[1].split(":").collect();
-        let read_index: usize = monkey_line[0].parse().unwrap();
+        // let monkey_line: Vec<&str> = input[0].split(" ").collect();
+        // let monkey_line: Vec<&str> = monkey_line[1].split(":").collect();
+        // let read_index: usize = monkey_line[0].parse().unwrap();
 
         // Get the starting items
         let items_line: Vec<&str> = input[1].split(": ").collect();
@@ -55,7 +55,7 @@ impl Monkey {
 
         // Make the actual monkey
         Self {
-            monkey_index: read_index,
+            // monkey_index: read_index,
             items: items,
             operation: (opt_type_l, opt_type_r),
             test_modulator: test_mod,
