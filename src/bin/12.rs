@@ -3,7 +3,7 @@ type Maze = Vec<Vec<Node>>;
 use advent_of_code::helpers::path_finding::{
     bfs::bfs,
     iddfs::iddfs,
-    node::{Node, NodeType},
+    node::Node,
 };
 
 fn get_starting_node(maze: Maze) -> Option<Node> {
