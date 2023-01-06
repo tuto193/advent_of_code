@@ -108,14 +108,15 @@ impl Node {
                 neighbors.push(neighbor);
             }
         }
-        println!(
-            "Node {:?}, has neighbors: {:?}",
-            self.coords,
-            neighbors
-                .iter()
-                .map(|n| n.coords)
-                .collect::<Vec<(usize, usize)>>()
-        );
+
+        // dbg!(
+        //     "Node {:?}, has neighbors: {:?}",
+        //     self.coords,
+        //     neighbors
+        //         .iter()
+        //         .map(|n| n.coords)
+        //         .collect::<Vec<(usize, usize)>>()
+        // );
         neighbors
     }
 
