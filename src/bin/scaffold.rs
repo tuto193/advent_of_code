@@ -68,21 +68,24 @@ fn main() {
     let example_path = format!("src/examples/{}.txt", day_padded);
     let module_path = format!("src/bin/{}.rs", day_padded);
 
-    let mut file = match safe_create_file(&module_path) {
-        Ok(file) => file,
+    let file = match safe_create_file(&module_path) {
+        Ok(file) => Some(file),
         Err(e) => {
             eprintln!("Failed to create module file: {}", e);
-            process::exit(1);
+            // process::exit(1);
+            None
         }
     };
 
-    match file.write_all(MODULE_TEMPLATE.replace("DAY", &day.to_string()).as_bytes()) {
-        Ok(_) => {
-            println!("Created module file \"{}\"", &module_path);
-        }
-        Err(e) => {
-            eprintln!("Failed to write module contents: {}", e);
-            process::exit(1);
+    if let Some(mut file) = file {
+            match file.write_all(MODULE_TEMPLATE.replace("DAY", &day.to_string()).as_bytes()) {
+            Ok(_) => {
+                println!("Created module file \"{}\"", &module_path);
+            }
+            Err(e) => {
+                eprintln!("Failed to write module contents: {}", e);
+                process::exit(1);
+            }
         }
     }
 
