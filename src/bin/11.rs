@@ -1,5 +1,5 @@
-use std::{borrow::Borrow, cell::RefCell, rc::Rc};
 use advent_of_code::helpers::monkey::Monkey;
+use std::{borrow::Borrow, cell::RefCell, rc::Rc};
 
 pub fn part_one(input: &str) -> Option<u128> {
     let input: Vec<&str> = input.split("\n\n").collect();
@@ -86,7 +86,6 @@ pub fn part_two(input: &str) -> Option<u128> {
     let money_business = most_pases * second_most_pases;
     // println!("Monkey business with lots of fear is: {}", money_business);
     Some(money_business)
-
 }
 
 fn main() {

@@ -4,6 +4,6 @@
  */
 
 pub mod directory;
-pub mod snake;
 pub mod monkey;
 pub mod path_finding;
+pub mod snake;

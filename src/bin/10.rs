@@ -66,7 +66,6 @@ fn get_drawn_pixels_from_cycle(cycle: &mut usize, times: usize, x: &mut i32, add
     to_return
 }
 
-
 pub fn part_one(input: &str) -> Option<i32> {
     let mut x = 1;
     let mut signal_strengths: Vec<i32> = vec![];

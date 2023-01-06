@@ -1,6 +1,10 @@
 type Maze = Vec<Vec<Node>>;
 
-use advent_of_code::helpers::path_finding::{bfs::bfs, iddfs::iddfs, node::{Node, NodeType}};
+use advent_of_code::helpers::path_finding::{
+    bfs::bfs,
+    iddfs::iddfs,
+    node::{Node, NodeType},
+};
 
 fn get_starting_node(maze: Maze) -> Option<Node> {
     for r in maze.into_iter() {
@@ -12,7 +16,6 @@ fn get_starting_node(maze: Maze) -> Option<Node> {
     }
     None
 }
-
 
 pub fn part_one(input: &str) -> Option<usize> {
     let input: Vec<&str> = input.split("\n").collect();

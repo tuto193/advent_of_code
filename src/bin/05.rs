@@ -48,7 +48,10 @@ pub fn part_one(input: &str) -> Option<Vec<String>> {
             }
         }
     }
-    let tops: Vec<String> = stacks.into_iter().map(|stack| stack.pop().unwrap()).collect();
+    let tops: Vec<String> = stacks
+        .into_iter()
+        .map(|stack| stack.pop().unwrap())
+        .collect();
     Some(tops)
 }
 
@@ -81,7 +84,10 @@ pub fn part_two(input: &str) -> Option<Vec<String>> {
             }
         }
     }
-    let tops: Vec<String> = stacks.into_iter().map(|stack| stack.pop().unwrap()).collect();
+    let tops: Vec<String> = stacks
+        .into_iter()
+        .map(|stack| stack.pop().unwrap())
+        .collect();
     Some(tops)
 }
 

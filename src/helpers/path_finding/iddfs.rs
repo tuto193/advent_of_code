@@ -4,8 +4,8 @@ use std::collections::HashSet;
 // type Maze = Vec<Vec<Node>>;
 
 pub fn iddfs(root: Node, maze: Maze) -> Option<Vec<Node>> {
-    let mut visited: HashSet<Node> = HashSet::new();
-    visited.insert(root);
+    let visited: HashSet<Node> = HashSet::new();
+    // visited.insert(root);
     let mut current_depth: usize = 0;
     loop {
         // println!("Current depth in IDDFS: {}", current_depth);
@@ -35,18 +35,14 @@ fn dls(
         // Already at depth. but maybe we could have carried on
         return (there_are_more, None);
     }
+    visited_by_parent.insert(node);
     // We need to go deeper!
     let neighbors = node.get_unvisited_neighbors(&maze, &visited_by_parent);
-    for n in neighbors.clone().into_iter() {
-        visited_by_parent.insert(n);
-    }
+    // for n in neighbors.clone().into_iter() {
+    //     visited_by_parent.insert(n);
+    // }
     for neighbor in neighbors.into_iter() {
-        let (remaining, nodes) = dls(
-            neighbor,
-            maze.clone(),
-            visited_by_parent.clone(),
-            depth - 1,
-        );
+        let (remaining, nodes) = dls(neighbor, maze.clone(), visited_by_parent.clone(), depth - 1);
         if let Some(mut ns) = nodes {
             let mut path = vec![node];
             path.append(&mut ns);

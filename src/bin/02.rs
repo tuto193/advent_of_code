@@ -14,7 +14,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         if i == "" {
             print!("At the end of file");
             println!("The score is: {}", outcome_score + used_tactic_score);
-            continue
+            continue;
         }
         // } else {
         //     outcome_score += 3;
@@ -30,14 +30,13 @@ pub fn part_one(input: &str) -> Option<u32> {
             // Rock
             "X" => used_tactic_score += 1,
             // Paper
-            "Y" =>  used_tactic_score += 2,
+            "Y" => used_tactic_score += 2,
             // Scisors
             "Z" => used_tactic_score += 3,
             x => print!("Found a weird sign: {}", x),
         }
     }
     Some(outcome_score + used_tactic_score)
-
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -59,7 +58,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         if i == "" {
             print!("At the end of file");
             println!("The score is: {}", outcome_score + used_tactic_score);
-            continue
+            continue;
         }
         // } else {
         //     outcome_score += 3;

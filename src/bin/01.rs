@@ -22,19 +22,19 @@ pub fn part_two(input: &str) -> Option<u32> {
     let total_elves = elves_vector.len() - 1;
 
     // let mut max = 0;
-    let mut elves_cals_vector: Vec<u32> = elves_vector.into_iter()
+    let mut elves_cals_vector: Vec<u32> = elves_vector
+        .into_iter()
         .take(total_elves)
-        .map(|elf|
+        .map(|elf| {
             elf.split("\n")
                 .into_iter()
                 .map(|cals| cals.parse::<u32>().unwrap())
                 .sum()
-        )
+        })
         .collect();
     elves_cals_vector.sort();
 
     Some(elves_cals_vector.into_iter().rev().take(3).sum())
-
 }
 
 fn main() {

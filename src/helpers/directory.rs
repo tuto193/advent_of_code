@@ -1,6 +1,5 @@
 use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
-
 #[derive(Debug, Clone)]
 pub struct File {
     name: String,
