@@ -1,4 +1,4 @@
-use super::node::Node;
+use super::node::{Node, print_maze};
 type Maze = Vec<Vec<Node>>;
 use std::collections::HashSet;
 

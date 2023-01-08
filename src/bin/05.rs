@@ -26,7 +26,7 @@ fn parse_initial_status(init_stat: &str) -> Vec<Vec<String>> {
     stacks.to_vec()
 }
 
-pub fn part_one(input: &str) -> Option<Vec<String>> {
+pub fn part_one(input: &str) -> Option<String> {
     let input = input.split("\n\n").collect::<Vec<&str>>();
     let initial_status = input[0];
     let input = input[1];
@@ -50,12 +50,13 @@ pub fn part_one(input: &str) -> Option<Vec<String>> {
     }
     let tops: Vec<String> = stacks
         .into_iter()
-        .map(|stack| stack.pop().unwrap())
+        .map(|mut stack| stack.pop().unwrap())
         .collect();
+    let tops: String = tops.join("");
     Some(tops)
 }
 
-pub fn part_two(input: &str) -> Option<Vec<String>> {
+pub fn part_two(input: &str) -> Option<String> {
     let input = input.split("\n\n").collect::<Vec<&str>>();
     let initial_status = input[0];
     let input = input[1];
@@ -86,8 +87,9 @@ pub fn part_two(input: &str) -> Option<Vec<String>> {
     }
     let tops: Vec<String> = stacks
         .into_iter()
-        .map(|stack| stack.pop().unwrap())
+        .map(|mut stack| stack.pop().unwrap())
         .collect();
+    let tops = tops.join("");
     Some(tops)
 }
 

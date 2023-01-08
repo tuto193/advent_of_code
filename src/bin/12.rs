@@ -1,5 +1,7 @@
 type Maze = Vec<Vec<Node>>;
 
+use std::collections::HashSet;
+
 use advent_of_code::helpers::path_finding::{
     bfs::bfs,
     iddfs::iddfs,
