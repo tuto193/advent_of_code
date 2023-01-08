@@ -1,6 +1,6 @@
 use super::node::{Node, print_maze};
 type Maze = Vec<Vec<Node>>;
-use std::collections::HashSet;
+use std::{collections::{HashSet, VecDeque}, thread::current};
 
 //      let Q be a queue
 //      label root as explored
@@ -15,10 +15,12 @@ use std::collections::HashSet;
 //                  w.parent := v
 //                  Q.enqueue(w)
 
-pub fn bfs(root: Node, maze: Maze) -> Option<Node> {
+pub fn bfs(root: Node, maze: Maze) -> Option<Vec<Node>> {
     //      let Q be a queue
     //      Q.enqueue(root)
-    let mut queue: Vec<Node> = vec![root];
+    // let mut queue: Vec<Node> = vec![root];
+    let mut queue: VecDeque<Node> = VecDeque::new();
+    queue.push_front(root);
 
     //      label root as explored
     let mut visited: HashSet<Node> = HashSet::new();
@@ -29,21 +31,23 @@ pub fn bfs(root: Node, maze: Maze) -> Option<Node> {
     // let mut found = false;
 
     //      while Q is not empty do
-    while queue.len() > 0 {
-        let current = queue[0];
+    while let Some(current) = queue.pop_front() {
+        // let current = queue.pop_front().unwrap();
+        // let current = queue:
+        // print_maze(current, &maze, &visited);
         // path.push(current); // This might need to be moved
 
         // let path_clone = path.clone();
         ///// DEQUEUE
-        if queue.len() > 1 {
-            queue = queue.drain(1..).collect();
-        } else {
-            queue.pop();
-        }
+        // if queue.len() > 1 {
+        //     let queue2 = queue.drain(1..).collect();
+        //     queue = queue2;
+        // } else {
+        //     queue.pop();
+        // }
         ///// DEQUEUE
-
         if current.is_end_node() {
-            return Some(current);
+            return Some(get_path_from_last(current, &maze));
             // break;
         }
 
@@ -52,7 +56,7 @@ pub fn bfs(root: Node, maze: Maze) -> Option<Node> {
             visited.insert(n);
             n.set_parent(current);
             // let mut to_append = path.
-            queue.push(n);
+            queue.push_back(n);
         }
         // visited.insert(&mut neighbors.clone());
         // level.append(&mut neighbors);
@@ -65,4 +69,16 @@ pub fn bfs(root: Node, maze: Maze) -> Option<Node> {
     }
     None
     // return (found, path);
+}
+
+fn get_path_from_last(end_node: Node, maze: &Maze) -> Vec<Node> {
+    let mut path = vec![end_node];
+    let mut current_node = end_node;
+    while let Some((x, y)) = current_node.get_parent() {
+        let parent = maze[y][x];
+        path.push(parent);
+        current_node = parent;
+    }
+    let path = path.into_iter().rev().collect();
+    path
 }

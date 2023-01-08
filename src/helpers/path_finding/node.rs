@@ -25,7 +25,10 @@ pub struct Node {
 impl Node {
     pub fn new(coords: (usize, usize), height_letter: char) -> Self {
         let (height, node_type) = match height_letter {
-            'E' => ('z' as usize + 1, NodeType::End),
+            'E' => {
+                // println!("End one was clearly found and marked");
+                ('z' as usize + 1, NodeType::End)
+            }
             'S' => ('a' as usize - 1, NodeType::Start),
             x => (x as usize, NodeType::Normal),
         };
@@ -125,6 +128,9 @@ impl Node {
     pub fn is_end_node(&self) -> bool {
         self.node_type == NodeType::End
     }
+    pub fn get_parent(&self) -> Option<(usize, usize)> {
+        self.parent
+    }
 }
 
 pub fn print_maze(current: Node, maze: &Maze, visited_nodes: &HashSet<Node>) {
@@ -143,7 +149,7 @@ pub fn print_maze(current: Node, maze: &Maze, visited_nodes: &HashSet<Node>) {
         }
         println!();
     }
-
+    println!();
     let duration = Duration::from_millis(30);
     std::thread::sleep(duration);
     // for _ in 0..9 {

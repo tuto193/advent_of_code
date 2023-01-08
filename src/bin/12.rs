@@ -19,6 +19,17 @@ fn get_starting_node(maze: Maze) -> Option<Node> {
     None
 }
 
+fn get_end_node(maze: Maze) -> Option<Node> {
+    for r in maze.into_iter() {
+        for node in r.into_iter() {
+            if node.is_end_node() {
+                return Some(node)
+            }
+        }
+    }
+    None
+}
+
 pub fn part_one(input: &str) -> Option<usize> {
     let input: Vec<&str> = input.split("\n").collect();
     // let row_length = input[0].len();
@@ -46,9 +57,12 @@ pub fn part_one(input: &str) -> Option<usize> {
         })
         .collect();
     let starting_node = get_starting_node(maze.clone()).unwrap();
+    let end_node = get_end_node(maze.clone()).unwrap();
+    println!("Start at {:?} and end at {:?}", starting_node.get_coords(), end_node.get_coords());
 
     // let path = bfs(starting_node, maze);
-    let path = iddfs(starting_node, maze);
+    // let path = iddfs(starting_node, maze);
+    let path = bfs(starting_node, maze);
     if let Some(found) = path {
         return Some(found.len() - 1);
     }
