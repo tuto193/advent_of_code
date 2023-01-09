@@ -15,59 +15,44 @@ use std::{collections::{HashSet, VecDeque}, thread::current};
 //                  w.parent := v
 //                  Q.enqueue(w)
 
-pub fn bfs(root: Node, maze: Maze) -> Option<Vec<Node>> {
+pub fn bfs(root: &Node, maze: &Maze) -> (Option<Vec<Node>>, usize) {
     //      let Q be a queue
     //      Q.enqueue(root)
     // let mut queue: Vec<Node> = vec![root];
     let mut queue: VecDeque<Node> = VecDeque::new();
-    queue.push_front(root);
+    queue.push_front(*root);
+    let mut next_level: Vec<Node> = vec![];
 
     //      label root as explored
     let mut visited: HashSet<Node> = HashSet::new();
-    visited.insert(root);
+    visited.insert(*root);
+    let mut depth = 0;
 
-    // let mut next_queue: Vec<Node> = vec![];
-    // let mut path: Vec<Node> = vec![];
-    // let mut found = false;
-
+    // let mut last_depth = 0;
     //      while Q is not empty do
     while let Some(current) = queue.pop_front() {
-        // let current = queue.pop_front().unwrap();
-        // let current = queue:
-        // print_maze(current, &maze, &visited);
-        // path.push(current); // This might need to be moved
-
-        // let path_clone = path.clone();
-        ///// DEQUEUE
-        // if queue.len() > 1 {
-        //     let queue2 = queue.drain(1..).collect();
-        //     queue = queue2;
-        // } else {
-        //     queue.pop();
-        // }
-        ///// DEQUEUE
+        // print_maze(current, maze, &visited);
+        println!("Current's coords {:?}", current.get_coords());
         if current.is_end_node() {
-            return Some(get_path_from_last(current, &maze));
-            // break;
+            dbg!(current);
+            println!("Found end node");
+            return (Some(get_path_from_last(current, &maze)), depth);
         }
 
         let neighbors = current.get_unvisited_neighbors(&maze, &visited);
-        for mut n in neighbors.clone().into_iter() {
+        let neighbors = neighbors.clone();
+        for n in neighbors.into_iter() {
             visited.insert(n);
-            n.set_parent(current);
-            // let mut to_append = path.
-            queue.push_back(n);
+            next_level.push(n);
         }
-        // visited.insert(&mut neighbors.clone());
-        // level.append(&mut neighbors);
-        // next_level.append(&mut neighbors);
-
-        // if level.len() == 0 {
-        //     level = next_level.drain(..).collect();
-        //     path.pop();
-        // }
+        if queue.is_empty() {
+            queue = next_level.drain(..).collect();
+            // last_depth = depth;
+            println!("Depth was {}", depth);
+            depth += 1;
+        }
     }
-    None
+    (None, depth)
     // return (found, path);
 }
 
@@ -75,9 +60,13 @@ fn get_path_from_last(end_node: Node, maze: &Maze) -> Vec<Node> {
     let mut path = vec![end_node];
     let mut current_node = end_node;
     while let Some((x, y)) = current_node.get_parent() {
+        println!("Reverting: {:?}", current_node);
         let parent = maze[y][x];
+        dbg!(parent);
         path.push(parent);
         current_node = parent;
+        dbg!(current_node);
+        print!("Then start again");
     }
     let path = path.into_iter().rev().collect();
     path

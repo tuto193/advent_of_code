@@ -150,8 +150,8 @@ pub fn print_maze(current: Node, maze: &Maze, visited_nodes: &HashSet<Node>) {
         println!();
     }
     println!();
-    let duration = Duration::from_millis(30);
-    std::thread::sleep(duration);
+    // let duration = Duration::from_millis(3);
+    // std::thread::sleep(duration);
     // for _ in 0..9 {
     //     println!();
     // }
