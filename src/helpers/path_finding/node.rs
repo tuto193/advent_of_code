@@ -1,7 +1,7 @@
 // use std::{cell::RefCell, rc::Rc};
 
 type Maze = Vec<Vec<Node>>;
-use std::{collections::HashSet, time::Duration};
+use std::collections::HashSet;
 
 // use crate::helpers::path_finding::node;
 
@@ -134,14 +134,13 @@ impl Node {
 }
 
 pub fn print_maze(current: Node, maze: &Maze, visited_nodes: &HashSet<Node>) {
-    let width= maze[0].len();
+    let width = maze[0].len();
     let height = maze.len();
     for y in 0..height {
         for x in 0..width {
             if current.get_coords() == (x, y) {
                 print!("@");
-            }
-            else if visited_nodes.contains(&maze[y][x]) {
+            } else if visited_nodes.contains(&maze[y][x]) {
                 print!("*");
             } else {
                 print!("·");

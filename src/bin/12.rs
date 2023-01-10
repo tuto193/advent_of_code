@@ -3,7 +3,7 @@ type Maze = Vec<Vec<Node>>;
 use std::collections::HashSet;
 
 use advent_of_code::helpers::path_finding::{
-    bfs::bfs,
+    bfs::{bfs, bfs_with_coords},
     iddfs::iddfs,
     node::Node,
 };
@@ -23,7 +23,7 @@ fn get_end_node(maze: Maze) -> Option<Node> {
     for r in maze.into_iter() {
         for node in r.into_iter() {
             if node.is_end_node() {
-                return Some(node)
+                return Some(node);
             }
         }
     }
@@ -46,27 +46,52 @@ pub fn part_one(input: &str) -> Option<usize> {
                 .collect()
         })
         .collect();
-    let maze: Maze = input
+    // let maze: Maze = input
+    //     .into_iter()
+    //     .enumerate()
+    //     .map(|(y, row)| {
+    //         row.into_iter()
+    //             .enumerate()
+    //             .map(|(x, letter)| Node::new((x, y), letter))
+    //             .collect()
+    //     })
+    //     .collect();
+    let mut start: (usize, usize) = (0, 0);
+    let mut goal: (usize, usize) = (0, 0);
+    let maze: Vec<Vec<u32>> = input
         .into_iter()
         .enumerate()
         .map(|(y, row)| {
             row.into_iter()
                 .enumerate()
-                .map(|(x, letter)| Node::new((x, y), letter))
+                .map(|(x, letter)| match letter {
+                    'S' => {
+                        start = (x, y);
+                        'a' as u32 - 1
+                    }
+                    'E' => {
+                        goal = (x, y);
+                        'z' as u32 + 1
+                    }
+                    l => l as u32,
+                })
                 .collect()
         })
         .collect();
-    let starting_node = get_starting_node(maze.clone()).unwrap();
-    let end_node = get_end_node(maze.clone()).unwrap();
-    println!("Start at {:?} and end at {:?}", starting_node.get_coords(), end_node.get_coords());
+    if let Some(path) = bfs_with_coords(start, goal, &maze) {
+        return Some(path.len() - 1);
+    }
+    // let starting_node = get_starting_node(maze.clone()).unwrap();
+    // let end_node = get_end_node(maze.clone()).unwrap();
+    // println!("Start at {:?} and end at {:?}", starting_node.get_coords(), end_node.get_coords());
 
     // let path = bfs(starting_node, maze);
     // let path = iddfs(starting_node, maze);
-    let path = bfs(&starting_node, &maze);
-    if let (Some(_found), depth) = path {
-        // return Some(found.len() - 1);
-        return Some(depth)
-    }
+    // let path = bfs(&starting_node, &maze);
+    // if let (Some(_found), depth) = path {
+    //     // return Some(found.len() - 1);
+    //     return Some(depth)
+    // }
     None
 }
 
