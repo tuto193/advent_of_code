@@ -71,7 +71,7 @@ pub fn part_one(input: &str) -> Option<usize> {
                     }
                     'E' => {
                         goal = (x, y);
-                        'z' as u32 + 1
+                        'z' as u32
                     }
                     l => l as u32,
                 })
@@ -86,12 +86,6 @@ pub fn part_one(input: &str) -> Option<usize> {
     // println!("Start at {:?} and end at {:?}", starting_node.get_coords(), end_node.get_coords());
 
     // let path = bfs(starting_node, maze);
-    // let path = iddfs(starting_node, maze);
-    // let path = bfs(&starting_node, &maze);
-    // if let (Some(_found), depth) = path {
-    //     // return Some(found.len() - 1);
-    //     return Some(depth)
-    // }
     None
 }
 
