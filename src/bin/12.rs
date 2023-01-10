@@ -1,34 +1,6 @@
-type Maze = Vec<Vec<Node>>;
-
-use std::collections::HashSet;
-
 use advent_of_code::helpers::path_finding::{
-    bfs::{bfs, bfs_with_coords},
-    iddfs::iddfs,
-    node::Node,
+    bfs::{bfs_with_coords},
 };
-
-fn get_starting_node(maze: Maze) -> Option<Node> {
-    for r in maze.into_iter() {
-        for node in r.into_iter() {
-            if node.is_starting_node() {
-                return Some(node);
-            }
-        }
-    }
-    None
-}
-
-fn get_end_node(maze: Maze) -> Option<Node> {
-    for r in maze.into_iter() {
-        for node in r.into_iter() {
-            if node.is_end_node() {
-                return Some(node);
-            }
-        }
-    }
-    None
-}
 
 pub fn part_one(input: &str) -> Option<usize> {
     let input: Vec<&str> = input.split("\n").collect();
@@ -41,21 +13,9 @@ pub fn part_one(input: &str) -> Option<usize> {
         .map(|r| {
             r.chars()
                 .into_iter()
-                // .skip(1) // We don't want empty stuff
-                // .take(row_length)
                 .collect()
         })
         .collect();
-    // let maze: Maze = input
-    //     .into_iter()
-    //     .enumerate()
-    //     .map(|(y, row)| {
-    //         row.into_iter()
-    //             .enumerate()
-    //             .map(|(x, letter)| Node::new((x, y), letter))
-    //             .collect()
-    //     })
-    //     .collect();
     let mut start: (usize, usize) = (0, 0);
     let mut goal: (usize, usize) = (0, 0);
     let maze: Vec<Vec<u32>> = input
@@ -81,11 +41,6 @@ pub fn part_one(input: &str) -> Option<usize> {
     if let Some(path) = bfs_with_coords(start, goal, &maze) {
         return Some(path.len() - 1);
     }
-    // let starting_node = get_starting_node(maze.clone()).unwrap();
-    // let end_node = get_end_node(maze.clone()).unwrap();
-    // println!("Start at {:?} and end at {:?}", starting_node.get_coords(), end_node.get_coords());
-
-    // let path = bfs(starting_node, maze);
     None
 }
 
@@ -112,6 +67,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 12);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(29));
     }
 }

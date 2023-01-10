@@ -1,9 +1,6 @@
-use super::node::{print_maze, Node};
-type Maze = Vec<Vec<Node>>;
 type Position = (usize, usize);
 use std::{
     collections::{HashSet, VecDeque},
-    thread::current,
 };
 
 //      let Q be a queue
@@ -19,62 +16,6 @@ use std::{
 //                  w.parent := v
 //                  Q.enqueue(w)
 
-pub fn bfs(root: &Node, maze: &Maze) -> (Option<Vec<Node>>, usize) {
-    //      let Q be a queue
-    //      Q.enqueue(root)
-    // let mut queue: Vec<Node> = vec![root];
-    let mut queue: VecDeque<Node> = VecDeque::new();
-    queue.push_front(*root);
-    let mut next_level: Vec<Node> = vec![];
-
-    //      label root as explored
-    let mut visited: HashSet<Node> = HashSet::new();
-    visited.insert(*root);
-    let mut depth = 0;
-
-    // let mut last_depth = 0;
-    //      while Q is not empty do
-    while let Some(current) = queue.pop_front() {
-        // print_maze(current, maze, &visited);
-        println!("Current's coords {:?}", current.get_coords());
-        if current.is_end_node() {
-            dbg!(current);
-            println!("Found end node");
-            return (Some(get_path_from_last(current, &maze)), depth);
-        }
-
-        let neighbors = current.get_unvisited_neighbors(&maze, &visited);
-        let neighbors = neighbors.clone();
-        for n in neighbors.into_iter() {
-            visited.insert(n);
-            next_level.push(n);
-        }
-        if queue.is_empty() {
-            queue = next_level.drain(..).collect();
-            // last_depth = depth;
-            println!("Depth was {}", depth);
-            depth += 1;
-        }
-    }
-    (None, depth)
-    // return (found, path);
-}
-
-fn get_path_from_last(end_node: Node, maze: &Maze) -> Vec<Node> {
-    let mut path = vec![end_node];
-    let mut current_node = end_node;
-    while let Some((x, y)) = current_node.get_parent() {
-        println!("Reverting: {:?}", current_node);
-        let parent = maze[y][x];
-        dbg!(parent);
-        path.push(parent);
-        current_node = parent;
-        dbg!(current_node);
-        print!("Then start again");
-    }
-    let path = path.into_iter().rev().collect();
-    path
-}
 
 fn get_neighboring_coords_for(node: Position, maze: &Vec<Vec<u32>>) -> Vec<Position> {
     let current_height = maze[node.1][node.0];
@@ -145,4 +86,27 @@ pub fn bfs_with_coords(
         }
     }
     None
+}
+
+pub fn print_maze(current: Position, maze: &Vec<Vec<u32>>, visited_nodes: &HashSet<Position>) {
+    let width = maze[0].len();
+    let height = maze.len();
+    for y in 0..height {
+        for x in 0..width {
+            if current == (x, y) {
+                print!("@");
+            } else if visited_nodes.contains(&(x, y)) {
+                print!("*");
+            } else {
+                print!("·");
+            }
+        }
+        println!();
+    }
+    println!();
+    // let duration = Duration::from_millis(3);
+    // std::thread::sleep(duration);
+    // for _ in 0..9 {
+    //     println!();
+    // }
 }
