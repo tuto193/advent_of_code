@@ -1,6 +1,6 @@
-use advent_of_code::helpers::path_finding::{
-    bfs::{bfs_with_coords},
-};
+type Position = (usize, usize);
+
+use advent_of_code::helpers::path_finding::bfs::bfs_with_coords;
 
 pub fn part_one(input: &str) -> Option<usize> {
     let input: Vec<&str> = input.split("\n").collect();
@@ -10,14 +10,10 @@ pub fn part_one(input: &str) -> Option<usize> {
     let input: Vec<Vec<char>> = input
         .into_iter()
         .take(height)
-        .map(|r| {
-            r.chars()
-                .into_iter()
-                .collect()
-        })
+        .map(|r| r.chars().into_iter().collect())
         .collect();
-    let mut start: (usize, usize) = (0, 0);
-    let mut goal: (usize, usize) = (0, 0);
+    let mut start: Position = (0, 0);
+    let mut goal: Position = (0, 0);
     let maze: Vec<Vec<u32>> = input
         .into_iter()
         .enumerate()
@@ -38,13 +34,48 @@ pub fn part_one(input: &str) -> Option<usize> {
                 .collect()
         })
         .collect();
-    if let Some(path) = bfs_with_coords(start, goal, &maze) {
+    if let Some(path) = bfs_with_coords(start, goal, &maze, false) {
         return Some(path.len() - 1);
     }
     None
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
+pub fn part_two(input: &str) -> Option<usize> {
+    let input_: Vec<&str> = input.split("\n").collect();
+    // let row_length = input[0].len();
+    let height = input_.len() - 1; // Because of last empty line
+                                  // let total_nodes = row_length * height;
+    let input_: Vec<Vec<char>> = input_
+        .into_iter()
+        .take(height)
+        .map(|r| r.chars().into_iter().collect())
+        .collect();
+    let mut goal: Position = (0, 0);
+    let maze: Vec<Vec<u32>> = input_
+        .into_iter()
+        .enumerate()
+        .map(|(y, row)| {
+            row.into_iter()
+                .enumerate()
+                .map(|(x, letter)| match letter {
+                    'S' => {
+                        'a' as u32
+                    }
+                    'E' => {
+                        goal = (x, y);
+                        'z' as u32
+                    }
+                    'a' => {
+                        'a' as u32
+                    }
+                    l => l as u32,
+                })
+                .collect()
+        })
+        .collect();
+    if let Some(path) = bfs_with_coords(goal, (0, 0), &maze, true) {
+        return Some(path.len() - 1);
+    }
     None
 }
 
