@@ -1,6 +1,6 @@
 type PacketEntry = (Option<isize>, (isize, isize));
 
-fn parse_packet(packet: &str) -> Vec<(Option<isize>, (isize, isize))> {
+fn parse_packet(packet: &str) -> Vec<PacketEntry> {
     let mut to_return: Vec<(Option<isize>, (isize, isize))> = vec![];
     let mut current_depth: isize = 0;
     let mut last_depth: isize = current_depth;
