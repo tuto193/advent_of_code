@@ -1,111 +1,145 @@
-fn is_right_bigger_than_left(left: &str, right: &str) -> bool {
-        let mut left = left.split(&['[', ','][..]).into_iter();
-        let mut right = right.split(&['[', ','][..]).into_iter();
-        let mut last_left = left.next();
-        let mut last_right = right.next();
-        'numbers: loop {
-            // println!("Comparing L:{:?} and R:{:?}", last_left, last_right);
-            if let Some(this_left) = last_left {
-                // Left still has stuff, so compare
-                match this_left {
-                    "" => {
-                        // Left is "[" so advance it
-                        last_left = left.next();
-                        if let Some(this_right) = last_right {
-                            // right is standing on something
-                            match this_right {
-                                "" => last_right = right.next(),
-                                right_number_par=> {
-                                    let actual_right: &str = right_number_par
-                                        .split("]")
-                                        .into_iter().next().unwrap();
-                                    match actual_right {
-                                        "" => {
-                                            // It was an empty list, so left is bigger
-                                            return false;
-                                        }
-                                        num => {
-                                            // It's standing on a number, so we can carry on passing it on
-                                            last_right = Some(num);
-                                        }
-                                    }
-                                }
-                            }
-                            continue 'numbers;
-                        } else {
-                            // Right ran out before left. Out of order!
-                            return false;
-                        }
+type PacketEntry = (Option<isize>, (isize, isize));
+
+fn parse_packet(packet: &str) -> Vec<(Option<isize>, (isize, isize))> {
+    let mut to_return: Vec<(Option<isize>, (isize, isize))> = vec![];
+    let mut current_depth: isize = 0;
+    let mut last_depth: isize = current_depth;
+    let mut packet = packet.split(&['[', ','][..]).into_iter();
+    let mut last_entry = packet.next();
+    'commas: loop {
+        if let Some(this_entry) = last_entry {
+            match this_entry {
+                "" => current_depth += 1,
+                number_and_close => {
+                    let mut num_n_cl_iter = number_and_close.split("]").into_iter();
+                    let to_add: Option<isize> = match num_n_cl_iter.next().unwrap() {
+                        "" => None, // it was a ]
+                        x => Some(x.parse().unwrap()),
+                    };
+                    to_return.push((to_add, (last_depth, current_depth)));
+                    while let Some(_close) = num_n_cl_iter.next() {
+                        current_depth -= 1;
                     }
-                    // Left: on number or number+"]+"
-                    left_num_par => {
-                        let actual_left = left_num_par
-                            .split("]")
-                            .into_iter()
-                            .next()
-                            .unwrap();
-                        match actual_left {
-                            "" => {
-                                // It's empty, so it was just an empty list in the end
-                                if let Some(this_right) = last_right {
-                                    let actual_right = this_right.split("]").into_iter().next().unwrap();
-                                    match actual_right {
-                                        "" => {
-                                            // Right also doesn't go deeper
-                                            // con
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if let Some(this_right) = last_right {
-                            match this_right{
-                                "" => {
-                                    last_right = right.next();
-                                    continue 'numbers;
-                                }
-                                right_num => {
-                                    let l_num: isize = left_num.parse().unwrap();
-                                    let r_num: isize = right_num.parse().unwrap();
-                                    if r_num == l_num {
-                                        // they're equal
-                                        last_left = left.next();
-                                        last_right = right.next();
-                                        continue 'numbers;
-                                    } else {
-                                        return r_num > l_num;
-                                    }
-                                }
-                            }
-                        } else {
-                            // left had a number, but right had run out.
-                            return false;
-                        }
-                    }
+                    // Until the comma
+                    last_depth = current_depth;
                 }
-            } else if let Some(_this_right) = last_right {
-                // right has more, and left doesn't, so it's the right oder
-                return true;
-            } else {
-                // Both ran out while still being "equal", so it's not the right oder
-                return false;
             }
+            last_entry = packet.next();
+        } else {
+            break 'commas;
         }
+    }
+    to_return
 }
 
-fn get_right_orders_sum(signal: Vec<&str>) -> usize {
+fn compare_entries(entry_l: PacketEntry, entry_r: PacketEntry, last_max_depth: isize) -> (Option<bool>, isize) {
+    let (try_left_number, (left_prev_depth, left_depth)) = entry_l;
+    let (try_right_number, (right_prev_depth, right_depth)) = entry_r;
+    // Check if they moved relative to the previous max depth
+    let height_diff_right= right_prev_depth - last_max_depth;
+    let height_diff_left = left_prev_depth - last_max_depth;
+    if height_diff_left >= 0 {
+        // Left is going up
+        if height_diff_right >= 0 {
+            // right is also going up
+            // We can then compare normally
+            // DO nothing here, and compare them properlly below
+        } else {
+            // right sis going down
+            // Right ran out fore left
+            return (Some(false), 0)
+        }
+    } else {
+        // left is going down
+        if height_diff_right >= 0 {
+            // Right is going up
+            // Left ran out before right
+            return (Some(true), 0)
+        } else {
+            // Right is also going down
+            if height_diff_left != height_diff_right {
+                // One of them ran out of stuff somewhere down the road
+                return (Some(height_diff_right > height_diff_left), 0)
+            }
+            // If they went down the same, they are at the same height, so we compare them normally below
+        }
+    }
+    // If we are here, it's because they both are going up, or went down he same amount
+    let current_max_depth = left_depth.max(right_depth);
+    if let Some(left_number) = try_left_number {
+        // Left is a number and NOT an emty list
+        if let Some(right_number) = try_right_number {
+            // Right is also a number an not an empty list
+            if left_number == right_number {
+                return (None, current_max_depth);
+            } else {
+                return (Some(right_number > left_number), 0);
+            }
+        } else {
+            // Left had a number and right just had an empty list/entry
+            return (Some(false), 0);
+        }
+    } else if try_right_number.is_some() {
+        // Right had a number, and left side was empty list/entry
+        return (Some(true), 0);
+    } else {
+        if left_depth == right_depth {
+            // Both empty lists were the same depth
+            return (None, current_max_depth);
+        } else {
+            return (Some(right_depth > left_depth), 0);
+        }
+    }
+}
+
+fn are_packets_in_order(left: &str, right: &str) -> bool {
+    let left = parse_packet(left);
+    let right = parse_packet(right);
+    let mut last_max_depth: isize = 0;
+    let mut left_iterator = left.into_iter();
+    let mut right_iterator = right.into_iter();
+    loop {
+        let left_entry = left_iterator.next();
+        let right_entry = right_iterator.next();
+        if let Some(left_remains) = left_entry {
+            if let Some(right_remains) = right_entry {
+                let (right_is_bigger, new_current_depth) = compare_entries(
+                    left_remains,
+                    right_remains,
+                    last_max_depth,
+                );
+                if let Some(to_return) = right_is_bigger {
+                    return to_return;
+                } else {
+                    last_max_depth = new_current_depth;
+                }
+            } else {
+                // Right ran out before left
+                return false;
+            }
+        } else if right_entry.is_some() {
+            // Left ran out before right
+            return true;
+        } else {
+            // Both ran out of entries. This shouldn't happen!
+            panic!("Error: Both sides ran out of entries.");
+        }
+    }
+}
+
+fn get_right_orders_sum(signal: Vec<&str>) -> isize {
     let mut sum = 0;
     for (i, packet) in signal.into_iter().enumerate() {
         let l_r: Vec<&str> = packet.split("\n").collect();
-        if is_right_bigger_than_left(l_r[0], l_r[1]) {
+        if are_packets_in_order(l_r[0], l_r[1]) {
             // println!("Right order. Adding!");
             sum += i + 1;
         }
     }
-    sum
+    sum as isize
 }
 
-pub fn part_one(input: &str) -> Option<usize> {
+pub fn part_one(input: &str) -> Option<isize> {
     let signal: Vec<&str> = input.split("\n\n").collect();
     let total_packets = signal.len() - 1;
     let signal: Vec<&str> = signal.into_iter().take(total_packets).collect();
@@ -113,7 +147,7 @@ pub fn part_one(input: &str) -> Option<usize> {
     return Some(sum_of_right_orders);
 }
 
-pub fn part_two(input: &str) -> Option<usize> {
+pub fn part_two(input: &str) -> Option<isize> {
     None
 }
 
