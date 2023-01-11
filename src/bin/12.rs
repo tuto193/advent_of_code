@@ -44,7 +44,7 @@ pub fn part_two(input: &str) -> Option<usize> {
     let input_: Vec<&str> = input.split("\n").collect();
     // let row_length = input[0].len();
     let height = input_.len() - 1; // Because of last empty line
-                                  // let total_nodes = row_length * height;
+                                   // let total_nodes = row_length * height;
     let input_: Vec<Vec<char>> = input_
         .into_iter()
         .take(height)
@@ -58,16 +58,12 @@ pub fn part_two(input: &str) -> Option<usize> {
             row.into_iter()
                 .enumerate()
                 .map(|(x, letter)| match letter {
-                    'S' => {
-                        'a' as u32
-                    }
+                    'S' => 'a' as u32,
                     'E' => {
                         goal = (x, y);
                         'z' as u32
                     }
-                    'a' => {
-                        'a' as u32
-                    }
+                    'a' => 'a' as u32,
                     l => l as u32,
                 })
                 .collect()
