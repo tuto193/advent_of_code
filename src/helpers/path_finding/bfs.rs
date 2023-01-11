@@ -14,7 +14,11 @@ use std::collections::{HashSet, VecDeque};
 //                  w.parent := v
 //                  Q.enqueue(w)
 
-fn get_neighboring_coords_for(node: Position, maze: &Vec<Vec<u32>>, backwards: bool) -> Vec<Position> {
+fn get_neighboring_coords_for(
+    node: Position,
+    maze: &Vec<Vec<u32>>,
+    backwards: bool,
+) -> Vec<Position> {
     let current_height = maze[node.1][node.0];
     let mut neighbors = vec![];
     let width = maze[0].len();
@@ -23,7 +27,7 @@ fn get_neighboring_coords_for(node: Position, maze: &Vec<Vec<u32>>, backwards: b
     if x > 0 {
         let neighbor = (x - 1, y);
         let neighbor_height = maze[neighbor.1][neighbor.0];
-        if ! backwards {
+        if !backwards {
             if neighbor_height < current_height + 2 {
                 neighbors.push(neighbor);
             }
@@ -36,7 +40,7 @@ fn get_neighboring_coords_for(node: Position, maze: &Vec<Vec<u32>>, backwards: b
     if x < width - 1 {
         let neighbor = (x + 1, y);
         let neighbor_height = maze[neighbor.1][neighbor.0];
-        if ! backwards {
+        if !backwards {
             if neighbor_height < current_height + 2 {
                 neighbors.push(neighbor);
             }
@@ -49,7 +53,7 @@ fn get_neighboring_coords_for(node: Position, maze: &Vec<Vec<u32>>, backwards: b
     if y < height - 1 {
         let neighbor = (x, y + 1);
         let neighbor_height = maze[neighbor.1][neighbor.0];
-        if ! backwards {
+        if !backwards {
             if neighbor_height < current_height + 2 {
                 neighbors.push(neighbor);
             }
@@ -62,7 +66,7 @@ fn get_neighboring_coords_for(node: Position, maze: &Vec<Vec<u32>>, backwards: b
     if y > 0 {
         let neighbor = (x, y - 1);
         let neighbor_height = maze[neighbor.1][neighbor.0];
-        if ! backwards {
+        if !backwards {
             if neighbor_height < current_height + 2 {
                 neighbors.push(neighbor);
             }
@@ -80,7 +84,7 @@ pub fn bfs_with_coords(
     start: Position,
     goal: Position,
     maze: &Vec<Vec<u32>>,
-    backwards: bool
+    backwards: bool,
 ) -> Option<Vec<Position>> {
     let mut queue: VecDeque<(Vec<Position>, Position)> = VecDeque::new();
     queue.push_back((vec![start], start));
@@ -88,14 +92,14 @@ pub fn bfs_with_coords(
     // visited.insert(start);
 
     while let Some((path, current)) = queue.pop_front() {
-        if ! backwards {
+        if !backwards {
             if current == goal {
-        // || maze[current.1][current.0] == 'z' as u32
+                // || maze[current.1][current.0] == 'z' as u32
                 return Some(path);
             }
         } else {
             if maze[current.1][current.0] == 'a' as u32 {
-                return Some(path)
+                return Some(path);
             }
         }
         if !visited.contains(&current) {
@@ -114,7 +118,6 @@ pub fn bfs_with_coords(
     }
     None
 }
-
 
 pub fn print_maze(current: Position, maze: &Vec<Vec<u32>>, visited_nodes: &HashSet<Position>) {
     let width = maze[0].len();
