@@ -5,28 +5,22 @@ fn parse_packet(packet: &str) -> Vec<PacketEntry> {
     let mut current_depth: isize = 0;
     let mut last_depth: isize = current_depth;
     let mut packet = packet.split(&['[', ','][..]).into_iter();
-    let mut last_entry = packet.next();
-    'commas: loop {
-        if let Some(this_entry) = last_entry {
-            match this_entry {
-                "" => current_depth += 1,
-                number_and_close => {
-                    let mut num_n_cl_iter = number_and_close.split("]").into_iter();
-                    let to_add: Option<isize> = match num_n_cl_iter.next().unwrap() {
-                        "" => None, // it was a ]
-                        x => Some(x.parse().unwrap()),
-                    };
-                    to_return.push((to_add, (last_depth, current_depth)));
-                    while let Some(_close) = num_n_cl_iter.next() {
-                        current_depth -= 1;
-                    }
-                    // Until the comma
-                    last_depth = current_depth;
+    while let Some(this_entry) = packet.next() {
+        match this_entry {
+            "" => current_depth += 1,
+            number_and_close => {
+                let mut num_n_cl_iter = number_and_close.split("]").into_iter();
+                let to_add: Option<isize> = match num_n_cl_iter.next().unwrap() {
+                    "" => None, // it was a ]
+                    x => Some(x.parse().unwrap()),
+                };
+                to_return.push((to_add, (last_depth, current_depth)));
+                while let Some(_close) = num_n_cl_iter.next() {
+                    current_depth -= 1;
                 }
+                // Until the comma
+                last_depth = current_depth;
             }
-            last_entry = packet.next();
-        } else {
-            break 'commas;
         }
     }
     to_return
@@ -131,10 +125,12 @@ fn get_right_orders_sum(signal: Vec<&str>) -> isize {
     let mut sum = 0;
     for (i, packet) in signal.into_iter().enumerate() {
         let l_r: Vec<&str> = packet.split("\n").collect();
+        // println!("{}\n{}", l_r[0], l_r[1]);
         if are_packets_in_order(l_r[0], l_r[1]) {
             // println!("Right order. Adding!");
             sum += i + 1;
         }
+        println!();
     }
     sum as isize
 }
