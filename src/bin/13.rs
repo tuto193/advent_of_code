@@ -143,7 +143,7 @@ pub fn part_one(input: &str) -> Option<isize> {
     return Some(sum_of_right_orders);
 }
 
-pub fn part_two(input: &str) -> Option<isize> {
+pub fn part_two(_input: &str) -> Option<isize> {
     None
 }
 

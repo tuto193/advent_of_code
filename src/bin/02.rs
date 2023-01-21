@@ -1,5 +1,5 @@
 pub fn part_one(input: &str) -> Option<u32> {
-    let r_p_s = vec!["X", "Y", "Z"];
+    // let r_p_s = vec!["X", "Y", "Z"];
     let wins = vec!["C X", "A Y", "B Z"];
     let draws = vec!["A X", "B Y", "C Z"];
     let contents = input;
