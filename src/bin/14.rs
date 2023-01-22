@@ -26,7 +26,8 @@ fn init_level(height: u32, width: u32) -> Level {
     to_ret
 }
 
-fn draw_wall(level: &mut Level, lines: &str) {
+fn draw_wall(level: &mut Level, lines: String) -> usize {
+    let mut lowest_height: usize = 0;
     let coords_list: Vec<(usize, usize)> = lines
         .split(" -> ")
         .into_iter()
@@ -36,6 +37,7 @@ fn draw_wall(level: &mut Level, lines: &str) {
                 .into_iter()
                 .map(|n| n.parse().unwrap())
                 .collect();
+            lowest_height = lowest_height.max(v[1]);
             (v[0], v[1])
         })
         .collect();
@@ -48,14 +50,21 @@ fn draw_wall(level: &mut Level, lines: &str) {
             }
         }
     }
+    lowest_height
 }
 
-fn parse_level(input: &str) -> Level {
+fn parse_level(input: &str, with_bottom_line: bool) -> Level {
     let mut level = init_level(1000, 1000);
     let input: Vec<&str> = input.split("\n").collect();
     let wanted_input = input.len() - 1;
+    let mut lowest_height: usize = 0;
     for wall_lines in input.into_iter().take(wanted_input) {
-        draw_wall(&mut level, wall_lines);
+        lowest_height = lowest_height.max(draw_wall(&mut level, wall_lines.into()));
+    }
+    lowest_height += 2;
+    if with_bottom_line {
+        // Draw the bottom line found
+        draw_wall(&mut level, format!("0,{} -> 999,{}", lowest_height, lowest_height));
     }
     level
 }
@@ -69,23 +78,50 @@ fn where_to_fall(grain: (usize, usize), level: &Level) -> Fall {
         let down = next_row[grain.0];
         let down_l = next_row[grain.0 - 1];
         let down_r = next_row[grain.0 + 1];
-        if down == Tile::Air {
-            return Fall::Down;
-        } else {
-            // There is something down, so check to the left and then down
-            let same_row = level[grain.1].clone();
-            if grain.0 > 0 || grain.0 < righmost_bound - 2 {
-            // if let Some(&left) = same_row.get(grain.0 - 1) {
+        match down {
+            Tile::Air => {
+                return Fall::Down;
+            }
+            d => {
+                // There is something down, so check to the left and then down
+                let same_row = level[grain.1].clone();
+                let left = same_row[grain.0 - 1];
+                let right = same_row[grain.0 + 1];
+                if grain.0 > 0 || grain.0 < righmost_bound - 2 {
+                // if let Some(&left) = same_row.get(grain.0 - 1) {
                 // if !same_row[grain.0 - 1] && !next_row[grain.0 - 1] {
-                if down_l == Tile::Air && down == Tile::Sand{
-                    return Fall::Left;
-                } else if down_r == Tile::Air && down == Tile::Sand {
-                    return Fall::Right;
+                    if down_l == Tile::Air {
+                        match d {
+                            Tile::Sand => {
+                                return Fall::Left;
+                            }
+                            _block => {
+                                if left == Tile::Air {
+                                    return Fall::Left;
+                                } else {
+                                    return Fall::Stop;
+                                }
+                            }
+                        }
+                    } else if down_r == Tile::Air {
+                        match d {
+                            Tile::Sand => {
+                                return Fall::Right;
+                            }
+                            _block => {
+                                if right == Tile::Air {
+                                    return Fall::Right;
+                                } else {
+                                    return Fall::Stop;
+                                }
+                            }
+                        }
+                    } else {
+                        return Fall::Stop;
+                    }
                 } else {
-                    return Fall::Stop;
+                    panic!("Got stock at the edge of the world. Cannot fall");
                 }
-            } else {
-                panic!("Got stock at the edge of the world. Cannot fall");
             }
         }
     } else {
@@ -94,6 +130,7 @@ fn where_to_fall(grain: (usize, usize), level: &Level) -> Fall {
     }
 }
 
+#[allow(dead_code)] // Since we only use this to debug
 fn printl_80x40_range(level: &Level, center_point: (usize, usize)) {
     let (x, y) = center_point;
     let x = 40.max(x.min(level[0].len() - 41));
@@ -102,7 +139,7 @@ fn printl_80x40_range(level: &Level, center_point: (usize, usize)) {
         for &block in row.into_iter().skip(x - 40).take(80) {
             match block {
                 Tile::Block => print!("#"),
-                Tile::Sand => print!("x"),
+                Tile::Sand => print!("o"),
                 Tile::Air => print!("·"),
             }
         }
@@ -112,6 +149,10 @@ fn printl_80x40_range(level: &Level, center_point: (usize, usize)) {
 }
 
 fn drop_sand_grain(level: &mut Level) -> bool {
+    if level[0][500] == Tile::Sand {
+        // The origin is full
+        return false;
+    }
     let mut grain: (usize, usize) = (500, 0);
     // let mut falling = true;
     loop {
@@ -142,8 +183,20 @@ fn drop_sand_grain(level: &mut Level) -> bool {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut level = parse_level(input);
-    let mut sand_corn_index = 1;
+    let mut level = parse_level(input, false);
+    let mut sand_corn_index = 0;
+    while drop_sand_grain(&mut level) {
+        // println!("Sand: {}", sand_corn_index);
+        // printl_80x40_range(&level, (500, 0));
+        sand_corn_index += 1;
+    }
+    // printl_80x40_range(&level, (500, 0));
+    Some(sand_corn_index)
+}
+
+pub fn part_two(input: &str) -> Option<u32> {
+    let mut level = parse_level(input, true);
+    let mut sand_corn_index = 0;
     while drop_sand_grain(&mut level) {
         println!("Sand: {}", sand_corn_index);
         printl_80x40_range(&level, (500, 0));
@@ -151,10 +204,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
     printl_80x40_range(&level, (500, 0));
     Some(sand_corn_index)
-}
 
-pub fn part_two(_input: &str) -> Option<u32> {
-    None
 }
 
 fn main() {
@@ -176,6 +226,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 14);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(93));
     }
 }
