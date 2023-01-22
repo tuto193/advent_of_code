@@ -1,3 +1,15 @@
+type Level = Vec<Vec<Tile>>;
+
+enum Tile {
+    Beacon,
+    NoBeacon,
+    Nothing,
+}
+
+fn init_level(width: usize, height: usize) -> Level {
+    let level = vec![]
+}
+
 pub fn part_one(input: &str) -> Option<u32> {
     None
 }
