@@ -31,4 +31,28 @@ impl Sensor {
         }
         within_range
     }
+
+    pub fn get_all_within_radius(&self) -> Vec<Position> {
+        let mut pos_in_range = vec![];
+        let large_lim: isize = 4000000;
+        let left = self.centre.0 - self.radius as isize;
+        let left = left.max(0).min(large_lim);
+        let right = self.centre.0 + self.radius as isize;
+        let right = right.max(0).min(large_lim);
+        let top = self.centre.1 - self.radius as isize;
+        let top = top.max(0).min(large_lim);
+        let bottom = self.centre.1 + self.radius as isize;
+        let bottom = bottom.max(0).min(large_lim);
+
+        for y in top..=bottom {
+            for x in left..=right {
+                let manhattan = self.centre.0.abs_diff(x) + self.centre.1.abs_diff(y);
+                if manhattan <= self.radius {
+                    pos_in_range.push((x,y));
+                }
+            }
+        }
+
+        pos_in_range
+    }
 }
