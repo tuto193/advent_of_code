@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use advent_of_code::helpers::sensor::{Sensor, Position};
+use advent_of_code::helpers::sensor::{Position, Sensor};
 
-fn get_sensors_and_beacons(input: &str) -> Vec<(Sensor, Position)>{
+fn get_sensors_and_beacons(input: &str) -> Vec<(Sensor, Position)> {
     let mut sensors_and_beacons: Vec<(Sensor, Position)> = vec![];
     let input: Vec<&str> = input.split("\n").collect();
     let wanted_input_len = input.len() - 1;
@@ -17,12 +17,7 @@ fn get_sensors_and_beacons(input: &str) -> Vec<(Sensor, Position)>{
         let beacon_y: Vec<&str> = l[9].split(&['=', ',', ':'][..]).collect();
         let beacon_y: isize = beacon_y[1].parse().unwrap();
         let beacon = (beacon_x, beacon_y);
-        sensors_and_beacons.push(
-            (
-                Sensor::new((sensor_x, sensor_y), beacon),
-                beacon
-            )
-        );
+        sensors_and_beacons.push((Sensor::new((sensor_x, sensor_y), beacon), beacon));
     }
     sensors_and_beacons
 }
@@ -52,7 +47,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<u32> {
     let sensors_and_beacons = get_sensors_and_beacons(input);
-        let large_lim: isize = 4000000;
+    let large_lim: isize = 4000000;
     // let wanted_y: isize = 10;
     // let wanted_y: isize = 2000000;
     let mut impossible_beacon_locs: Vec<Position> = vec![];
@@ -65,7 +60,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     while range <= large_lim {
         for y in 0..=large_lim {
             for x in 0..=large_lim {
-                if !total_no_doubles.contains(&(x,y)) {
+                if !total_no_doubles.contains(&(x, y)) {
                     return Some(calculate_tuning_frequency((x, y)) as u32);
                 }
             }

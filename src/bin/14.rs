@@ -64,7 +64,10 @@ fn parse_level(input: &str, with_bottom_line: bool) -> Level {
     lowest_height += 2;
     if with_bottom_line {
         // Draw the bottom line found
-        draw_wall(&mut level, format!("0,{} -> 999,{}", lowest_height, lowest_height));
+        draw_wall(
+            &mut level,
+            format!("0,{} -> 999,{}", lowest_height, lowest_height),
+        );
     }
     level
 }
@@ -73,7 +76,7 @@ fn where_to_fall(grain: (usize, usize), level: &Level) -> Fall {
     let lower_bownd = level.len();
     let righmost_bound = level[0].len();
     if grain.1 < lower_bownd - 2 {
-    // if let Some(next_row) = level.get(grain.1 + 1) {
+        // if let Some(next_row) = level.get(grain.1 + 1) {
         let next_row = level[grain.1 + 1].clone();
         let down = next_row[grain.0];
         let down_l = next_row[grain.0 - 1];
@@ -88,8 +91,8 @@ fn where_to_fall(grain: (usize, usize), level: &Level) -> Fall {
                 let left = same_row[grain.0 - 1];
                 let right = same_row[grain.0 + 1];
                 if grain.0 > 0 || grain.0 < righmost_bound - 2 {
-                // if let Some(&left) = same_row.get(grain.0 - 1) {
-                // if !same_row[grain.0 - 1] && !next_row[grain.0 - 1] {
+                    // if let Some(&left) = same_row.get(grain.0 - 1) {
+                    // if !same_row[grain.0 - 1] && !next_row[grain.0 - 1] {
                     if down_l == Tile::Air {
                         match d {
                             Tile::Sand => {
@@ -204,7 +207,6 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
     printl_80x40_range(&level, (500, 0));
     Some(sand_corn_index)
-
 }
 
 fn main() {

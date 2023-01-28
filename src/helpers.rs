@@ -6,5 +6,5 @@
 pub mod directory;
 pub mod monkey;
 pub mod path_finding;
-pub mod snake;
 pub mod sensor;
+pub mod snake;

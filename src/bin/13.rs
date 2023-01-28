@@ -26,11 +26,15 @@ fn parse_packet(packet: &str) -> Vec<PacketEntry> {
     to_return
 }
 
-fn compare_entries(entry_l: PacketEntry, entry_r: PacketEntry, last_max_depth: isize) -> (Option<bool>, isize) {
+fn compare_entries(
+    entry_l: PacketEntry,
+    entry_r: PacketEntry,
+    last_max_depth: isize,
+) -> (Option<bool>, isize) {
     let (try_left_number, (left_prev_depth, left_depth)) = entry_l;
     let (try_right_number, (right_prev_depth, right_depth)) = entry_r;
     // Check if they moved relative to the previous max depth
-    let height_diff_right= right_prev_depth - last_max_depth;
+    let height_diff_right = right_prev_depth - last_max_depth;
     let height_diff_left = left_prev_depth - last_max_depth;
     if height_diff_left >= 0 {
         // Left is going up
@@ -41,19 +45,19 @@ fn compare_entries(entry_l: PacketEntry, entry_r: PacketEntry, last_max_depth: i
         } else {
             // right sis going down
             // Right ran out fore left
-            return (Some(false), 0)
+            return (Some(false), 0);
         }
     } else {
         // left is going down
         if height_diff_right >= 0 {
             // Right is going up
             // Left ran out before right
-            return (Some(true), 0)
+            return (Some(true), 0);
         } else {
             // Right is also going down
             if height_diff_left != height_diff_right {
                 // One of them ran out of stuff somewhere down the road
-                return (Some(height_diff_right > height_diff_left), 0)
+                return (Some(height_diff_right > height_diff_left), 0);
             }
             // If they went down the same, they are at the same height, so we compare them normally below
         }
@@ -97,11 +101,8 @@ fn are_packets_in_order(left: &str, right: &str) -> bool {
         let right_entry = right_iterator.next();
         if let Some(left_remains) = left_entry {
             if let Some(right_remains) = right_entry {
-                let (right_is_bigger, new_current_depth) = compare_entries(
-                    left_remains,
-                    right_remains,
-                    last_max_depth,
-                );
+                let (right_is_bigger, new_current_depth) =
+                    compare_entries(left_remains, right_remains, last_max_depth);
                 if let Some(to_return) = right_is_bigger {
                     return to_return;
                 } else {
