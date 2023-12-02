@@ -1,46 +1,85 @@
-pub fn part_one(input: &str) -> Option<u32> {
-    let elves_vector: Vec<&str> = input.split("\n\n").collect();
+advent_of_code::solution!(1);
 
-    let mut max = 0;
-    for elf in elves_vector.into_iter() {
-        let elf_string: Vec<&str> = elf.split("\n").collect();
-        let mut sum = 0;
-        for line in elf_string.into_iter() {
-            if line != "" {
-                sum += line.parse::<u32>().unwrap();
-            }
+pub fn part_one(input: &str) -> Option<u32> {
+    let lines: Vec<String> = input.split("\n").map(|e| e.to_string()).collect();
+    let mut sum: u32 = 0;
+    for line in lines {
+        if line == "" {
+            continue;
         }
-        if sum > max {
-            max = sum;
+        let numbers: Vec<u32> = line
+            .chars()
+            .filter(|c| c.is_ascii_digit())
+            .map(|c| c.to_digit(10).unwrap())
+            .collect();
+        let to_add = (numbers[0] * 10) + (numbers[numbers.len() - 1]);
+        sum += to_add;
+    }
+    Some(sum)
+}
+
+fn parse_number_from_line(line: String) -> u32 {
+    let numbers = vec![
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    ];
+    let line = line.to_lowercase();
+    let first_digit_index = line.find(char::is_numeric).unwrap_or(9999);
+
+    let last_digit_index = line.rfind(char::is_numeric).unwrap_or(0);
+    let mut first_written_index = 9999;
+    let mut first_written_digit: u32 = 9;
+    let mut last_written_index = 0;
+    let mut last_written_digit = 9;
+    for (i, &n) in numbers.iter().enumerate() {
+        let possible_first = line.find(n).unwrap_or(9999);
+        let possible_last = line.rfind(n).unwrap_or(0);
+        if possible_first < first_written_index {
+            first_written_index = possible_first;
+            first_written_digit = i as u32 + 1;
+            // numbers.iter().enumerate().find(|nu| *nu.1 == n).unwrap().0 as u32 + 1;
+        }
+        if possible_last > last_written_index {
+            last_written_index = possible_last;
+            last_written_digit = 1 as u32 + 1;
+            // numbers.iter().enumerate().rfind(|nu| *nu.1 == n).unwrap().0 as u32 + 1;
         }
     }
-    Some(max)
+    let first_actual_digit = if first_digit_index < first_written_index {
+        *line
+            .chars()
+            .filter(|c| c.is_ascii_digit())
+            .map(|c| c.to_digit(10).unwrap())
+            .collect::<Vec<u32>>()
+            .first()
+            .unwrap()
+    } else {
+        first_written_digit
+    };
+    let last_actual_digit = if last_digit_index > last_written_index {
+        *line
+            .chars()
+            .filter(|c| c.is_ascii_digit())
+            .map(|c| c.to_digit(10).unwrap())
+            .collect::<Vec<u32>>()
+            .last()
+            .unwrap()
+    } else {
+        last_written_digit
+    };
+    first_actual_digit * 10 + last_actual_digit
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let elves_vector: Vec<&str> = input.split("\n\n").collect();
-    let total_elves = elves_vector.len() - 1;
-
-    // let mut max = 0;
-    let mut elves_cals_vector: Vec<u32> = elves_vector
-        .into_iter()
-        .take(total_elves)
-        .map(|elf| {
-            elf.split("\n")
-                .into_iter()
-                .map(|cals| cals.parse::<u32>().unwrap())
-                .sum()
-        })
-        .collect();
-    elves_cals_vector.sort();
-
-    Some(elves_cals_vector.into_iter().rev().take(3).sum())
-}
-
-fn main() {
-    let input = &advent_of_code::read_file("inputs", 1);
-    advent_of_code::solve!(1, part_one, input);
-    advent_of_code::solve!(2, part_two, input);
+    let lines: Vec<String> = input.split("\n").map(|e| e.to_string()).collect();
+    let mut sum: u32 = 0;
+    for line in lines {
+        if line == "" {
+            continue;
+        }
+        let number = parse_number_from_line(line);
+        sum += number;
+    }
+    Some(sum)
 }
 
 #[cfg(test)]
@@ -49,13 +88,13 @@ mod tests {
 
     #[test]
     fn test_part_one() {
-        let input = advent_of_code::read_file("examples", 1);
-        assert_eq!(part_one(&input), None);
+        let result = part_one(&advent_of_code::template::read_file("examples", DAY));
+        assert_eq!(result, Some(142));
     }
 
     #[test]
     fn test_part_two() {
-        let input = advent_of_code::read_file("examples", 1);
-        assert_eq!(part_two(&input), None);
+        let result = part_two(&advent_of_code::template::read_file("examples", DAY));
+        assert_eq!(result, Some(281));
     }
 }

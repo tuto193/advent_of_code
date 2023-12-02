@@ -5,22 +5,8 @@
 Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.rust-lang.org/).
 
 <!--- advent_readme_stars table --->
-## 2022 Results
 
-| Day | Part 1 | Part 2 |
-| :---: | :---: | :---: |
-| [Day 1](https://adventofcode.com/2022/day/1) | ⭐ | ⭐ |
-| [Day 2](https://adventofcode.com/2022/day/2) | ⭐ | ⭐ |
-| [Day 3](https://adventofcode.com/2022/day/3) | ⭐ | ⭐ |
-| [Day 4](https://adventofcode.com/2022/day/4) | ⭐ | ⭐ |
-| [Day 5](https://adventofcode.com/2022/day/5) | ⭐ | ⭐ |
-| [Day 6](https://adventofcode.com/2022/day/6) | ⭐ | ⭐ |
-| [Day 7](https://adventofcode.com/2022/day/7) | ⭐ | ⭐ |
-| [Day 8](https://adventofcode.com/2022/day/8) | ⭐ | ⭐ |
-| [Day 9](https://adventofcode.com/2022/day/9) | ⭐ | ⭐ |
-| [Day 10](https://adventofcode.com/2022/day/10) | ⭐ | ⭐ |
-| [Day 11](https://adventofcode.com/2022/day/11) | ⭐ | ⭐ |
-<!--- advent_readme_stars table --->
+<!--- benchmarking table --->
 
 ---
 
@@ -33,6 +19,7 @@ This template supports all major OS (macOS, Linux, Windows).
 1.  Open [the template repository](https://github.com/fspoettel/advent-of-code-rust) on Github.
 2.  Click [Use this template](https://github.com/fspoettel/advent-of-code-rust/generate) and create your repository.
 3.  Clone your repository to your computer.
+4.  If you are solving a previous year's advent of code, change the `AOC_YEAR` variable in `.cargo/config.toml` to reflect the year you are solving.
 
 ### Setup rust 💻
 
@@ -53,43 +40,40 @@ This template supports all major OS (macOS, Linux, Windows).
 cargo scaffold <day>
 
 # output:
-# Created module "src/bin/01.rs"
-# Created empty input file "src/inputs/01.txt"
-# Created empty example file "src/examples/01.txt"
+# Created module file "src/bin/01.rs"
+# Created empty input file "data/inputs/01.txt"
+# Created empty example file "data/examples/01.txt"
 # ---
 # 🎄 Type `cargo solve 01` to run your solution.
 ```
 
-Individual solutions live in the `./src/bin/` directory as separate binaries.
+Individual solutions live in the `./src/bin/` directory as separate binaries. _Inputs_ and _examples_ live in the the `./data` directory.
 
-Every [solution](https://github.com/fspoettel/advent-of-code-rust/blob/main/src/bin/scaffold.rs#L11-L41) has _unit tests_ referencing its _example_ file. Use these unit tests to develop and debug your solution against the example input. For some puzzles, it might be easier to forgo the example file and hardcode inputs into the tests.
+Every [solution](https://github.com/fspoettel/advent-of-code-rust/blob/main/src/template/commands/scaffold.rs#L9-L35) has _tests_ referencing its _example_ file in `./data/examples`. Use these tests to develop and debug your solutions against the example input.
 
-When editing a solution, `rust-analyzer` will display buttons for running / debugging unit tests above the unit test blocks.
+> [!TIP]
+> If a day has different example inputs for both parts, you can use the `read_file_part()` helper in your tests instead of `read_file()`. For example, if this applies to day 1, you can create a second example file `01-2.txt` and invoke the helper like `let result = part_two(&advent_of_code::template::read_file_part("examples", DAY, 2));` to read it in `test_part_two`.
+
+> [!TIP]
+> when editing a solution, `rust-analyzer` will display buttons for running / debugging unit tests above the unit test blocks.
 
 ### Download input & description for a day
 
-> **Note**  
-> This command requires [installing the aoc-cli crate](#download-puzzle-inputs-via-aoc-cli).
+> [!IMPORTANT] 
+> This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
 
 ```sh
 # example: `cargo download 1`
 cargo download <day>
 
 # output:
-# Loaded session cookie from "/Users/<snip>/.adventofcode.session".
-# Fetching puzzle for day 1, 2022...
-# Saving puzzle description to "src/puzzles/01.md"...
-# Downloading input for day 1, 2022...
-# Saving puzzle input to "src/inputs/01.txt"...
-# Done!
+# [INFO  aoc] 🎄 aoc-cli - Advent of Code command-line tool
+# [INFO  aoc_client] 🎅 Saved puzzle to 'data/puzzles/01.md'
+# [INFO  aoc_client] 🎅 Saved input to 'data/inputs/01.txt'
 # ---
-# 🎄 Successfully wrote input to "src/inputs/01.txt".
-# 🎄 Successfully wrote puzzle to "src/puzzles/01.md".
+# 🎄 Successfully wrote input to "data/inputs/01.txt".
+# 🎄 Successfully wrote puzzle to "data/puzzles/01.md".
 ```
-
-To download inputs for previous years, append the `--year/-y` flag. _(example: `cargo download 1 --year 2020`)_
-
-Puzzle descriptions are stored in `src/puzzles` as markdown files. Puzzle inputs are not checked into git. [Reasoning](https://old.reddit.com/r/adventofcode/comments/k99rod/sharing_input_data_were_we_requested_not_to/gf2ukkf/?context=3).
 
 ### Run solutions for a day
 
@@ -98,19 +82,24 @@ Puzzle descriptions are stored in `src/puzzles` as markdown files. Puzzle inputs
 cargo solve <day>
 
 # output:
+#     Finished dev [unoptimized + debuginfo] target(s) in 0.13s
 #     Running `target/debug/01`
-# 🎄 Part 1 🎄
-#
-# 6 (elapsed: 37.03µs)
-#
-# 🎄 Part 2 🎄
-#
-# 9 (elapsed: 33.18µs)
+# Part 1: 42 (166.0ns)
+# Part 2: 42 (41.0ns)
 ```
 
-`solve` is an alias for `cargo run --bin`. To run an optimized version for benchmarking, append the `--release` flag.
+The `solve` command runs your solution against real puzzle inputs. To run an optimized build of your code, append the `--release` flag as with any other rust program.
 
-Displayed _timings_ show the raw execution time of your solution without overhead (e.g. file reads).
+By default, `solve` executes your code once and shows the execution time. If you append the `--time` flag to the command, the runner will run your code between `10` and `10.000` times (depending on execution time of first execution) and print the average execution time.
+
+For example, running a benchmarked, optimized execution of day 1 would look like `cargo solve 1 --release --time`. Displayed _timings_ show the raw execution time of your solution without overhead like file reads.
+
+#### Submitting solutions
+
+> [!IMPORTANT]
+> This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
+
+In order to submit part of a solution for checking, append the `--submit <part>` option to the `solve` command.
 
 ### Run all solutions
 
@@ -122,22 +111,21 @@ cargo all
 # ----------
 # | Day 01 |
 # ----------
-# 🎄 Part 1 🎄
-#
-# 0 (elapsed: 170.00µs)
-#
-# 🎄 Part 2 🎄
-#
-# 0 (elapsed: 30.00µs)
+# Part 1: 42 (19.0ns)
+# Part 2: 42 (19.0ns)
 # <...other days...>
 # Total: 0.20ms
 ```
 
-`all` is an alias for `cargo run`. To run an optimized version for benchmarking, use the `--release` flag.
+This runs all solutions sequentially and prints output to the command-line. Same as for the `solve` command, the `--release` flag runs an optimized build.
 
-_Total timing_ is computed from individual solution _timings_ and excludes as much overhead as possible.
+#### Update readme benchmarks
 
-### Run all solutions against the example input
+The template can output a table with solution times to your readme. In order to generate a benchmarking table, run `cargo all --release --time`. If everything goes well, the command will output "_Successfully updated README with benchmarks._" after the execution finishes and the readme will be updated.
+
+Please note that these are not "scientific" benchmarks, understand them as a fun approximation. 😉 Timings, especially in the microseconds range, might change a bit between invocations.
+
+### Run all tests
 
 ```sh
 cargo test
@@ -159,8 +147,8 @@ cargo clippy
 
 ### Read puzzle description in terminal
 
-> **Note**  
-> This command requires [installing the aoc-cli crate](#download-puzzle-inputs-via-aoc-cli).
+> [!IMPORTANT]
+> This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
 
 ```sh
 # example: `cargo read 1`
@@ -172,24 +160,14 @@ cargo read <day>
 # ...the input...
 ```
 
-To read inputs for previous years, append the `--year/-y` flag. _(example: `cargo read 1 --year 2020`)_
-
 ## Optional template features
 
-### Download puzzle inputs via aoc-cli
+### Configure aoc-cli integration
 
-1. Install [`aoc-cli`](https://github.com/scarvalhojr/aoc-cli/) via cargo: `cargo install aoc-cli --version 0.7.0`
-2. Create an `.adventofcode.session` file in your home directory and paste your session cookie[^1] into it. To get this, press F12 anywhere on the Advent of Code website to open your browser developer tools. Look in your Cookies under the Application or Storage tab, and copy out the `session` cookie value.
+1. Install [`aoc-cli`](https://github.com/scarvalhojr/aoc-cli/) via cargo: `cargo install aoc-cli --version 0.12.0`
+2. Create an `.adventofcode.session` file in your home directory and paste your session cookie. To retrieve the session cookie, press F12 anywhere on the Advent of Code website to open your browser developer tools. Look in _Cookies_ under the _Application_ or _Storage_ tab, and copy out the `session` cookie value. [^1]
 
-Once installed, you can use the [download command](#download-input--description-for-a-day).
-
-### Check code formatting in CI
-
-Uncomment the `format` job in the `ci.yml` workflow to enable fmt checks in CI.
-
-### Enable clippy lints in CI
-
-Uncomment the `clippy` job in the `ci.yml` workflow to enable clippy checks in CI.
+Once installed, you can use the [download command](#download-input--description-for-a-day), the read command, and automatically submit solutions via the [`--submit` flag](#submitting-solutions).
 
 ### Automatically track ⭐️ progress in the readme
 
@@ -205,12 +183,19 @@ Go to the leaderboard page of the year you want to track and click _Private Lead
 
 Go to the _Secrets_ tab in your repository settings and create the following secrets:
 
--   `AOC_ENABLED`: This variable controls whether the workflow is enabled. Set it to `true` to enable the progress tracker.
--   `AOC_USER_ID`: Go to [this page](https://adventofcode.com/settings) and copy your user id. It's the number behind the `#` symbol in the first name option. Example: `3031`
--   `AOC_YEAR`: the year you want to track. Example: `2021`
+-   `AOC_USER_ID`: Go to [this page](https://adventofcode.com/settings) and copy your user id. It's the number behind the `#` symbol in the first name option. Example: `3031`.
+-   `AOC_YEAR`: the year you want to track. Example: `2021`.
 -   `AOC_SESSION`: an active session[^2] for the advent of code website. To get this, press F12 anywhere on the Advent of Code website to open your browser developer tools. Look in your Cookies under the Application or Storage tab, and copy out the `session` cookie.
 
+Go to the _Variables_ tab in your repository settings and create the following variable:
+
+-   `AOC_ENABLED`: This variable controls whether the workflow is enabled. Set it to `true` to enable the progress tracker. After you complete AoC or no longer work on it, you can set this to `false` to disable the CI.
+
 ✨ You can now run this action manually via the _Run workflow_ button on the workflow page. If you want the workflow to run automatically, uncomment the `schedule` section in the `readme-stars.yml` workflow file or add a `push` trigger.
+
+### Check code formatting / clippy lints in CI
+
+Uncomment the respective sections in the `ci.yml` workflow.
 
 ### Use VS Code to debug your code
 
