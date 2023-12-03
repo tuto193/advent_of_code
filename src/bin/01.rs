@@ -23,25 +23,33 @@ fn parse_number_from_line(line: String) -> u32 {
         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
     let line = line.to_lowercase();
-    let first_digit_index = line.find(char::is_numeric).unwrap_or(9999);
+    let first_digit_index = if let Some(exists) = line.find(char::is_numeric) {
+        exists as isize
+    } else {
+        isize::MAX
+    };
 
-    let last_digit_index = line.rfind(char::is_numeric).unwrap_or(0);
-    let mut first_written_index = 9999;
-    let mut first_written_digit: u32 = 9;
-    let mut last_written_index = 0;
-    let mut last_written_digit = 9;
+    let last_digit_index = if let Some(exists) = line.rfind(char::is_numeric) {
+        exists as isize
+    } else {
+        -1
+    };
+    let mut first_written_index = isize::MAX;
+    let mut first_written_digit: u32 = 0;
+    let mut last_written_index = -1;
+    let mut last_written_digit = 0;
     for (i, &n) in numbers.iter().enumerate() {
-        let possible_first = line.find(n).unwrap_or(9999);
-        let possible_last = line.rfind(n).unwrap_or(0);
-        if possible_first < first_written_index {
-            first_written_index = possible_first;
-            first_written_digit = i as u32 + 1;
-            // numbers.iter().enumerate().find(|nu| *nu.1 == n).unwrap().0 as u32 + 1;
+        if let Some(possible_first) = line.find(n) {
+            if (possible_first as isize) < first_written_index {
+                first_written_index = possible_first as isize;
+                first_written_digit = (i as u32) + 1
+            }
         }
-        if possible_last > last_written_index {
-            last_written_index = possible_last;
-            last_written_digit = 1 as u32 + 1;
-            // numbers.iter().enumerate().rfind(|nu| *nu.1 == n).unwrap().0 as u32 + 1;
+        if let Some(possible_last) = line.rfind(n) {
+            if (possible_last as isize) > last_written_index {
+                last_written_index = possible_last as isize;
+                last_written_digit = (i as u32) + 1;
+            }
         }
     }
     let first_actual_digit = if first_digit_index < first_written_index {
